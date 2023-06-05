@@ -14,7 +14,6 @@ const course = {
             title: " Hasta los jueces / Olvida tu pasado, mira tu futuro.",
             description:
                 "2 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/Fv8aSrgujyM",
         },
         {
@@ -22,7 +21,6 @@ const course = {
             title: "Instrucciones para un Rey | El corazón de David revelado",
             description:
                 "3 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/E6MxtGB7ADE",
         },
         {
@@ -30,7 +28,6 @@ const course = {
             title: "Desde el diamante hasta los profetas. Llamando pecado a lo que Dios le llama.",
             description:
                 " 4 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/DOYmDb2lxEM",
         },
         {
@@ -38,7 +35,6 @@ const course = {
             title: "Hasta los exilios de Israel y Judá",
             description:
                 "5 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/ZZ6107Dd7mA",
         },
         {
@@ -46,7 +42,6 @@ const course = {
             title: " Sesión 6. Hasta Ciro Rey de Persia",
             description:
                 "6 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/wlKfu9zXHLA",
         },
         {
@@ -54,7 +49,6 @@ const course = {
             title: " Línea de tiempo e historia del hijo pródigo.",
             description:
                 "7 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/_me6qohlqGI",
         },
         {
@@ -62,7 +56,6 @@ const course = {
             title: "¿Quién soy?",
             description:
                 "8 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/r3-1xUMxgeM",
         },
         {
@@ -70,7 +63,6 @@ const course = {
             title: "Video 3",
             description:
                 "9 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/b2SKe8OU6e4",
         },
         {
@@ -78,7 +70,6 @@ const course = {
             title: "La Ley de Moisés",
             description:
                 "10 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/2KPLvPQpYOw",
         },
         {
@@ -86,7 +77,6 @@ const course = {
             title: "La Ley de Moisés",
             description:
                 "11 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/dnETnQfMqXA",
         },
         {
@@ -94,7 +84,6 @@ const course = {
             title: "La Ley de Moisés",
             description:
                 "12 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/KGDm_MZlr74",
         },
         {
@@ -102,7 +91,6 @@ const course = {
             title: "La Ley de Moisés",
             description:
                 "13 dentidad ¿quiénes somos? ¿De quiénes venimos? ¡Conoce la historia de esta familia de la cuál tú eres parte!",
-
             url: "https://www.youtube.com/embed/c4KYMevjbAw",
         },
 
