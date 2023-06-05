@@ -10,7 +10,7 @@ const {
 } = require("../controllers/auth");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
-const { videos } = require("../controllers/videos");
+const { course } = require("../controllers/course");
 
 const router = Router();
 
@@ -43,8 +43,8 @@ router.post(
 
 router.get("/renew", validarJWT, revalidarToken);
 
-router.get("/videos", (req, res) => {
-    res.json(videos);
+router.get("/course", (req, res) => {
+    res.json(course);
 });
 
 module.exports = router;
