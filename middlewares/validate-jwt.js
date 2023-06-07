@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const validateJWT = (req, res = response, next) => {
     //lo vamos a pedir x-token headers
+
     const token = req.header("x-token");
 
     if (!token) {
@@ -27,8 +28,6 @@ const validateJWT = (req, res = response, next) => {
             msg: "TOKEN no valido!!",
         });
     }
-
-    // console.log(token)
 
     next();
 };
