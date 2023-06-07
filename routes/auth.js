@@ -4,12 +4,12 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const {
-    crearUsuario,
-    loginUsuario,
-    revalidarToken,
+    createUser,
+    loginUser,
+    revalidateToken,
 } = require("../controllers/auth");
-const { validarCampos } = require("../middlewares/validar-campos");
-const { validarJWT } = require("../middlewares/validar-jwt");
+const { validateFields } = require("../middlewares/validate-fields");
+const { validateJWT } = require("../middlewares/validate-jwt");
 const { course } = require("../controllers/course");
 
 const router = Router();
@@ -23,9 +23,9 @@ router.post(
         check("password", "El password debe de ser de 6 caracteres").isLength({
             min: 6,
         }),
-        validarCampos,
+        validateFields,
     ],
-    crearUsuario
+    createUser
 );
 
 router.post(
@@ -36,12 +36,12 @@ router.post(
         check("password", "El password debe de ser de 6 caracteres").isLength({
             min: 6,
         }),
-        validarCampos,
+        validateFields,
     ],
-    loginUsuario
+    loginUser
 );
 
-router.get("/renew", validarJWT, revalidarToken);
+router.get("/renew", validateJWT, revalidateToken);
 
 router.get("/course", (req, res) => {
     res.json(course);
