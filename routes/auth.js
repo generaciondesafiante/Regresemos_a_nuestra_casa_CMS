@@ -1,36 +1,50 @@
 // Rutas de usuarios /Auth
 // host + /api/auth
 
-const { Router } = require('express')
-const { check } = require('express-validator')
-const { crearUsuario, loginUsuario, revalidarToken } = require('../controllers/auth')
-const { validarCampos } = require('../middlewares/validar-campos')
-const { validarJWT }= require('../middlewares/validar-jwt')
+const { Router } = require("express");
+const { check } = require("express-validator");
+const {
+    createUser,
+    loginUser,
+    revalidateToken,
+} = require("../controllers/auth");
+const { validateFields } = require("../middlewares/validate-fields");
+const { validateJWT } = require("../middlewares/validate-jwt");
+const { course } = require("../controllers/course");
 
-
-
-const router = Router()
+const router = Router();
 
 router.post(
-    '/new',
-    [//middlewares
-        check('name', 'El nombre es obligatorio').not().isEmpty(),
-        check('email','el email es obligatorio').isEmail(),
-        check('password', 'El password debe de ser de 6 caracteres').isLength({min:6}),
-        validarCampos
-    ]
-    ,crearUsuario)
-
- router.post(
-    '/',
-    [//middlewares
-        check('email','el email es obligatorio').isEmail(),
-        check('password', 'El password debe de ser de 6 caracteres').isLength({min:6}),
-        validarCampos
+    "/new",
+    [
+        //middlewares
+        check("name", "El nombre es obligatorio").not().isEmpty(),
+        check("email", "el email es obligatorio").isEmail(),
+        check("password", "El password debe de ser de 6 caracteres").isLength({
+            min: 6,
+        }),
+        validateFields,
     ],
-    loginUsuario ) 
+    createUser
+);
 
- router.get('/renew', validarJWT , revalidarToken)
+router.post(
+    "/",
+    [
+        //middlewares
+        check("email", "el email es obligatorio").isEmail(),
+        check("password", "El password debe de ser de 6 caracteres").isLength({
+            min: 6,
+        }),
+        validateFields,
+    ],
+    loginUser
+);
 
+router.get("/renew", validateJWT, revalidateToken);
 
- module.exports = router 
+router.get("/course", (req, res) => {
+    res.json(course);
+});
+
+module.exports = router;
