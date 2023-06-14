@@ -23,6 +23,10 @@ router.post(
         check("password", "El password debe de ser de 6 caracteres").isLength({
             min: 6,
         }),
+        check("lastname", "El apellido  es obligatorio").not().isEmpty(),
+        check("country", "La pais es obligatorio").not().isEmpty(),
+        check("city", "La cuidad es obligatorio").not().isEmpty(),
+        check("phone", "La cuidad es obligatorio").not().isEmpty(),
         validateFields,
     ],
     createUser
