@@ -27,13 +27,24 @@ const createUser = async (req, res = response) => {
         await user.save();
 
         //* trigger jwt
-        const token = await triggerJWT(user.id, user.name);
+        const token = await triggerJWT(
+            user.id,
+            user.name,
+            user.lastname,
+            user.country,
+            user.city,
+            user.phone
+        );
 
         return res.status(201).json({
             ok: true,
             uid: user.id,
             name: user.name,
             email: user.email,
+            lastname: user.lastname,
+            country: user.country,
+            city: user.city,
+            phone: user.phone,
             token,
         });
     } catch (error) {
@@ -72,13 +83,25 @@ const loginUser = async (req, res = response) => {
 
         //*Generar nuestro Jwt
 
-        const token = await triggerJWT(user.id, user.name, user.email);
+        const token = await triggerJWT(
+            user.id,
+            user.name,
+            user.email,
+            user.ciy,
+            user.country,
+            user.lastname,
+            user.phone
+        );
 
         res.json({
             ok: true,
             uid: user.id,
+            lastname: user.lastname,
             name: user.name,
             email: user.email,
+            city: user.city,
+            country: user.country,
+            phone: user.phone,
             token,
         });
     } catch (error) {
@@ -93,18 +116,28 @@ const loginUser = async (req, res = response) => {
 //todo: renew token
 
 const revalidateToken = async (req, res = response) => {
-    // const {email, name, password} = (req.body)
-
-    const { name, uid, email } = req;
+    const { name, email, uid, city, lastname, phone, country } = req;
 
     //* generar un nuevo JWT y retornarlo en esta petircion
-    const token = await triggerJWT(uid, name, email);
+    const token = await triggerJWT(
+        name,
+        email,
+        uid,
+        city,
+        country,
+        phone,
+        lastname
+    );
 
     res.json({
         ok: true,
         uid,
         name,
         email,
+        city,
+        lastname,
+        country,
+        phone,
         token,
     });
 };
