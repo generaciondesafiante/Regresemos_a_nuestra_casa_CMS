@@ -30,7 +30,7 @@ const UserSchema = Schema({
     },
     phone: {
         type: Number,
-        require: true,
+        require: false,
     },
 });
 
