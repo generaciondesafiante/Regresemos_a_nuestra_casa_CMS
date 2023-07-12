@@ -27,7 +27,7 @@ router.post(
             min: 6,
         }),
         check("lastname", "El apellido  es obligatorio.").not().isEmpty(),
-        check("country", "La país es obligatorio.").not().isEmpty(),
+        check("country", "El país es obligatorio.").not().isEmpty(),
         check("city", "La cuidad es obligatoria.").not().isEmpty(),
         check("phone", "El teléfono es opcional.").not().isEmpty(),
         validateFields,
