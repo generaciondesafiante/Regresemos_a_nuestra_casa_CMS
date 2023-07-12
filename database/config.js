@@ -1,10 +1,10 @@
 
 const mongoose = require('mongoose')
 
-const dbConection = async() => {
+const dbConection = async () => {
     try {
-        
-       await mongoose.connect(process.env.db_cnn);
+
+        await mongoose.connect(process.env.db_cnn);
 
         console.log('Db online')
 
