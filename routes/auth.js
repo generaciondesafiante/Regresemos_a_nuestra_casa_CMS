@@ -18,15 +18,18 @@ router.post(
     "/new",
     [
         //middlewares
-        check("name", "El nombre es obligatorio").not().isEmpty(),
-        check("email", "el email es obligatorio").isEmail(),
-        check("password", "El password debe de ser de 6 caracteres").isLength({
+        check("name", "El nombre es obligatorio.").not().isEmpty(),
+        check("email", "El correo electrónico  es obligatorio.").isEmail(),
+        check(
+            "password",
+            "La contraseña debe tener mínimo 6 caracteres."
+        ).isLength({
             min: 6,
         }),
-        check("lastname", "El apellido  es obligatorio").not().isEmpty(),
-        check("country", "La pais es obligatorio").not().isEmpty(),
-        check("city", "La cuidad es obligatorio").not().isEmpty(),
-        check("phone", "La cuidad es obligatorio").not().isEmpty(),
+        check("lastname", "El apellido  es obligatorio.").not().isEmpty(),
+        check("country", "La país es obligatorio.").not().isEmpty(),
+        check("city", "La cuidad es obligatoria.").not().isEmpty(),
+        check("phone", "El teléfono es opcional.").not().isEmpty(),
         validateFields,
     ],
     createUser
@@ -36,8 +39,11 @@ router.post(
     "/",
     [
         //middlewares
-        check("email", "el email es obligatorio").isEmail(),
-        check("password", "El password debe de ser de 6 caracteres").isLength({
+        check("email", "El correo electrónico  es obligatorio.").isEmail(),
+        check(
+            "password",
+            "La contraseña debe tener mínimo 6 caracteres."
+        ).isLength({
             min: 6,
         }),
         validateFields,
