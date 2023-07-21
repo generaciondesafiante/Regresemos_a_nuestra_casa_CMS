@@ -3,7 +3,8 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const User = require("../models/User");
 const { triggerJWT } = require("../helpers/jwt");
-
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 //Todo: register
 
 const createUser = async (req, res = response) => {
@@ -141,9 +142,43 @@ const revalidateToken = async (req, res = response) => {
         token,
     });
 };
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const oldUser = await User.findOne({ email });
+        if (!oldUser) {
+            return res.send("El usuario no esta registrado!!!");
+        }
+        const secret = triggerJWT + oldUser.password;
+        const token = jwt.sign(
+            { email: oldUser.emial, id: oldUser._id },
+            secret,
+            { expiresIn: "2m" }
+        );
+        const link = `http://localhost:8080/api/auth/reset-password/${oldUser._id}/${token}`;
+        console.log(link);
+        res.json({
+            email,
+            token,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Por favor hable con el administrador!!!",
+        });
+    }
+};
 
+const resetPassword = async (req, res = response) => {
+    const { id, token } = req.params;
+    console.log(req.params);
+    res.send("done");
+};
 module.exports = {
     createUser,
     loginUser,
     revalidateToken,
+    forgotPassword,
+    resetPassword,
 };

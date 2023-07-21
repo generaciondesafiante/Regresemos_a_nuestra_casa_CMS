@@ -1,16 +1,20 @@
 // Rutas de usuarios /Auth
 // host + /api/auth
 
-const { Router } = require("express");
+const { Router, response } = require("express");
 const { check } = require("express-validator");
 const {
     createUser,
     loginUser,
     revalidateToken,
+    resetPassword,
+    forgotPassword,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
 const { course } = require("../controllers/course");
+const User = require("../models/User");
+const { triggerJWT } = require("../helpers/jwt");
 
 const router = Router();
 
@@ -52,6 +56,14 @@ router.post(
 );
 
 router.get("/renew", validateJWT, revalidateToken);
+
+router.post(
+    "/forgot-password",
+    [check("email", "El correo electrónico  es obligatorio.").isEmail()],
+    forgotPassword
+);
+
+router.get("/reset-password/:id/:token", resetPassword);
 
 router.get("/course", (req, res) => {
     res.json(course);
