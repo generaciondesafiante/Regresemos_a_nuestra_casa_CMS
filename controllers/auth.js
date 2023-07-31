@@ -34,7 +34,8 @@ const createUser = async (req, res = response) => {
             user.lastname,
             user.country,
             user.city,
-            user.phone
+            user.phone,
+            user.image
         );
 
         return res.status(201).json({
@@ -46,6 +47,7 @@ const createUser = async (req, res = response) => {
             country: user.country,
             city: user.city,
             phone: user.phone,
+            image: user.image,
             token,
         });
     } catch (error) {
@@ -91,7 +93,8 @@ const loginUser = async (req, res = response) => {
             user.ciy,
             user.country,
             user.lastname,
-            user.phone
+            user.phone,
+            user.image
         );
 
         res.json({
@@ -103,6 +106,7 @@ const loginUser = async (req, res = response) => {
             city: user.city,
             country: user.country,
             phone: user.phone,
+            image: user.image,
             token,
         });
     } catch (error) {
@@ -142,43 +146,30 @@ const revalidateToken = async (req, res = response) => {
         token,
     });
 };
-const forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    try {
-        const oldUser = await User.findOne({ email });
-        if (!oldUser) {
-            return res.send("El usuario no esta registrado!!!");
-        }
-        const secret = triggerJWT + oldUser.password;
-        const token = jwt.sign(
-            { email: oldUser.emial, id: oldUser._id },
-            secret,
-            { expiresIn: "2m" }
-        );
-        const link = `http://localhost:8080/api/auth/reset-password/${oldUser._id}/${token}`;
-        console.log(link);
-        res.json({
-            email,
-            token,
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            ok: false,
-            msg: "Por favor hable con el administrador!!!",
-        });
+const forgotPassword = async (req, res = response) => {
+
+
+    const { id } = req.params;
+    const { _id, password, ...resto } = req.body;
+
+    // todo validar contra base de datos
+    if (password) {
+        const salt = bcrypt.genSaltSync();
+        resto.password = bcrypt.hashSync(password, salt);
     }
+    const user = await User.findByIdAndUpdate(id, resto);
+
+    res.json({
+        msg: "put API - UsuarioPut",
+        id,
+        user,
+    });
 };
 
-const resetPassword = async (req, res = response) => {
-    const { id, token } = req.params;
-    console.log(req.params);
-    res.send("done");
-};
+
 module.exports = {
     createUser,
     loginUser,
     revalidateToken,
     forgotPassword,
-    resetPassword,
 };
