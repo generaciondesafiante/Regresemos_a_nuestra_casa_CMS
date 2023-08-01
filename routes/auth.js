@@ -1,22 +1,18 @@
 // Rutas de usuarios /Auth
 // host + /api/auth
 
-const { Router, response } = require("express");
+const { Router } = require("express");
 const { check } = require("express-validator");
 const {
     createUser,
     loginUser,
     revalidateToken,
-
-    forgotPassword,
-
+    editInformationUser,
+    emailUserPasswordForget,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
 const { course } = require("../controllers/course");
-
-const User = require("../models/User");
-const { triggerJWT } = require("../helpers/jwt");
 const { existeUsuarioPorId } = require("../helpers/db-validators");
 
 const router = Router();
@@ -61,19 +57,27 @@ router.post(
 
 router.get("/renew", validateJWT, revalidateToken);
 
-
 router.put(
     "/forgot-password/:id",
     [
         check("id", "No es un ID válido").isMongoId(),
         check("id").custom(existeUsuarioPorId),
-        validateFields
+        validateFields,
     ],
 
-    forgotPassword
+    editInformationUser
 );
 
+router.post(
+    "/check-email",
+    [
+        //middlewares
+        check("email", "El correo electrónico  es obligatorio.").isEmail(),
 
+        validateFields,
+    ],
+    emailUserPasswordForget
+);
 
 router.get("/course", (req, res) => {
     res.json(course);

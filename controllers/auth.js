@@ -1,10 +1,8 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
-const { validationResult } = require("express-validator");
 const User = require("../models/User");
 const { triggerJWT } = require("../helpers/jwt");
-const nodemailer = require("nodemailer");
-const jwt = require("jsonwebtoken");
+
 //Todo: register
 
 const createUser = async (req, res = response) => {
@@ -34,8 +32,7 @@ const createUser = async (req, res = response) => {
             user.lastname,
             user.country,
             user.city,
-            user.phone,
-            user.image
+            user.phone
         );
 
         return res.status(201).json({
@@ -47,7 +44,6 @@ const createUser = async (req, res = response) => {
             country: user.country,
             city: user.city,
             phone: user.phone,
-            image: user.image,
             token,
         });
     } catch (error) {
@@ -93,8 +89,7 @@ const loginUser = async (req, res = response) => {
             user.ciy,
             user.country,
             user.lastname,
-            user.phone,
-            user.image
+            user.phone
         );
 
         res.json({
@@ -106,7 +101,7 @@ const loginUser = async (req, res = response) => {
             city: user.city,
             country: user.country,
             phone: user.phone,
-            image: user.image,
+
             token,
         });
     } catch (error) {
@@ -146,9 +141,7 @@ const revalidateToken = async (req, res = response) => {
         token,
     });
 };
-const forgotPassword = async (req, res = response) => {
-
-
+const editInformationUser = async (req, res = response) => {
     const { id } = req.params;
     const { _id, password, ...resto } = req.body;
 
@@ -166,10 +159,35 @@ const forgotPassword = async (req, res = response) => {
     });
 };
 
+const emailUserPasswordForget = async (req, res = response) => {
+    const { email } = req.body;
 
+    try {
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({
+                ok: false,
+                msg: "El usario no existe con ese email",
+            });
+        }
+        //*Generar nuestro Jwt
+        res.json({
+            ok: true,
+            uid: user.id,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Por favor hable con el administrador",
+        });
+    }
+};
 module.exports = {
     createUser,
     loginUser,
     revalidateToken,
-    forgotPassword,
+    editInformationUser,
+    emailUserPasswordForget,
 };

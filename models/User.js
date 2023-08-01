@@ -32,9 +32,6 @@ const UserSchema = Schema({
         type: Number,
         require: false,
     },
-    image: {
-        type: String
-    }
 });
 
 module.exports = model("User", UserSchema);
