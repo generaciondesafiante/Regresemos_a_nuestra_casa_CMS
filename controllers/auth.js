@@ -1,6 +1,5 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
-const { validationResult } = require("express-validator");
 const User = require("../models/User");
 const { triggerJWT } = require("../helpers/jwt");
 
@@ -102,6 +101,7 @@ const loginUser = async (req, res = response) => {
             city: user.city,
             country: user.country,
             phone: user.phone,
+
             token,
         });
     } catch (error) {
@@ -141,9 +141,53 @@ const revalidateToken = async (req, res = response) => {
         token,
     });
 };
+const editInformationUser = async (req, res = response) => {
+    const { id } = req.params;
+    const { _id, password, ...resto } = req.body;
 
+    // todo validar contra base de datos
+    if (password) {
+        const salt = bcrypt.genSaltSync();
+        resto.password = bcrypt.hashSync(password, salt);
+    }
+    const user = await User.findByIdAndUpdate(id, resto);
+
+    res.json({
+        msg: "put API - UsuarioPut",
+        id,
+        user,
+    });
+};
+
+const emailUserPasswordForget = async (req, res = response) => {
+    const { email } = req.body;
+
+    try {
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({
+                ok: false,
+                msg: "El usario no existe con ese email",
+            });
+        }
+        //*Generar nuestro Jwt
+        res.json({
+            ok: true,
+            uid: user.id,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Por favor hable con el administrador",
+        });
+    }
+};
 module.exports = {
     createUser,
     loginUser,
     revalidateToken,
+    editInformationUser,
+    emailUserPasswordForget,
 };

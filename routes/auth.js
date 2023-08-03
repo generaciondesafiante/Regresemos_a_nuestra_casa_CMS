@@ -7,10 +7,13 @@ const {
     createUser,
     loginUser,
     revalidateToken,
+    editInformationUser,
+    emailUserPasswordForget,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
 const { course } = require("../controllers/course");
+const { existeUsuarioPorId } = require("../helpers/db-validators");
 
 const router = Router();
 
@@ -30,6 +33,7 @@ router.post(
         check("country", "El país es obligatorio.").not().isEmpty(),
         check("city", "La cuidad es obligatoria.").not().isEmpty(),
         check("phone", "El teléfono es opcional.").not().isEmpty(),
+
         validateFields,
     ],
     createUser
@@ -52,6 +56,28 @@ router.post(
 );
 
 router.get("/renew", validateJWT, revalidateToken);
+
+router.put(
+    "/forgot-password/:id",
+    [
+        check("id", "No es un ID válido").isMongoId(),
+        check("id").custom(existeUsuarioPorId),
+        validateFields,
+    ],
+
+    editInformationUser
+);
+
+router.post(
+    "/check-email",
+    [
+        //middlewares
+        check("email", "El correo electrónico  es obligatorio.").isEmail(),
+
+        validateFields,
+    ],
+    emailUserPasswordForget
+);
 
 router.get("/course", (req, res) => {
     res.json(course);
