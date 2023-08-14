@@ -79,8 +79,5 @@ router.post(
     emailUserPasswordForget
 );
 
-router.get("/course", (req, res) => {
-    res.json(course);
-});
 
 module.exports = router;
