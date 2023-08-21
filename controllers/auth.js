@@ -2,7 +2,8 @@ const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const { triggerJWT } = require("../helpers/jwt");
-
+const { sendPasswordResetEmail } = require("../middlewares/validate-email-reset-password");
+const jwt = require("jsonwebtoken");
 //Todo: register
 
 const createUser = async (req, res = response) => {
@@ -149,6 +150,10 @@ const editInformationUser = async (req, res = response) => {
     if (password) {
         const salt = bcrypt.genSaltSync();
         resto.password = bcrypt.hashSync(password, salt);
+
+        const user = await User.findById(id); // Obtener los datos del usuario actualizado
+        const resetToken = jwt.sign({ userId: id }, 'secret_key', { expiresIn: '1h' });
+        await sendPasswordResetEmail(user.email, resetToken);
     }
     const user = await User.findByIdAndUpdate(id, resto);
 
