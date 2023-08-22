@@ -27,6 +27,7 @@ app.use(express.json());
 //Routes
 //todo: auth//create, login, renew del token
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/course", require("./routes/course"));
 //todo: CRUD: EVENTOS
 
 //listen requests
