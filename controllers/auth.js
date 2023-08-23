@@ -144,6 +144,28 @@ const revalidateToken = async (req, res = response) => {
 };
 const editInformationUser = async (req, res = response) => {
     const { id } = req.params;
+    const { _id, ...resto } = req.body;
+
+    const user = await User.findByIdAndUpdate(id, resto);
+    const token = await triggerJWT(
+        user.id,
+        user.name,
+        user.email,
+        user.ciy,
+        user.country,
+        user.lastname,
+        user.phone
+    );
+    console.log(token)
+    res.json({
+        msg: "put API - UsuarioPut",
+        id,
+        user,
+        token
+    });
+};
+const resetForgetPassword = async (req, res = response) => {
+    // const { id } = req.params;
     const { _id, password, ...resto } = req.body;
 
     // todo validar contra base de datos
@@ -152,34 +174,57 @@ const editInformationUser = async (req, res = response) => {
         resto.password = bcrypt.hashSync(password, salt);
 
         const user = await User.findById(id); // Obtener los datos del usuario actualizado
-        const resetToken = jwt.sign({ userId: id }, 'secret_key', { expiresIn: '1h' });
-        await sendPasswordResetEmail(user.email, resetToken);
+        // const resetToken = jwt.sign({ userId: id }, 'secret_key', { expiresIn: '1h' });
+        // await sendPasswordResetEmail(user.email, resetToken);
     }
     const user = await User.findByIdAndUpdate(id, resto);
-
+    const token = await triggerJWT(
+        user.id,
+        user.name,
+        user.email,
+        user.ciy,
+        user.country,
+        user.lastname,
+        user.phone
+    );
+    console.log(token)
     res.json({
         msg: "put API - UsuarioPut",
         id,
         user,
+        token
     });
 };
 
 const emailUserPasswordForget = async (req, res = response) => {
+    const { id } = req.params;
+
     const { email } = req.body;
 
     try {
         let user = await User.findOne({ email });
-
+        const token = await triggerJWT(
+            user.id,
+            user.name,
+            user.email,
+            user.ciy,
+            user.country,
+            user.lastname,
+            user.phone
+        );
         if (!user) {
             return res.status(400).json({
                 ok: false,
                 msg: "El usario no existe con ese email",
             });
         }
+        const resetToken = jwt.sign({ userId: id }, 'secret_key', { expiresIn: '1h' });
+        await sendPasswordResetEmail(user.email, resetToken);
         //*Generar nuestro Jwt
         res.json({
             ok: true,
             uid: user.id,
+            token
         });
     } catch (error) {
         console.log(error);
@@ -195,4 +240,5 @@ module.exports = {
     revalidateToken,
     editInformationUser,
     emailUserPasswordForget,
+    resetForgetPassword
 };
