@@ -4,12 +4,12 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const {
-    createUser,
-    loginUser,
-    revalidateToken,
-    editInformationUser,
-    emailUserPasswordForget,
-    changePassword,
+  createUser,
+  loginUser,
+  revalidateToken,
+  editInformationUser,
+  emailUserPasswordForget,
+  changePassword,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
@@ -19,76 +19,73 @@ const { existeUsuarioPorId } = require("../helpers/db-validators");
 const router = Router();
 
 router.post(
-    "/new",
-    [
-        //middlewares
-        check("name", "El nombre es obligatorio.").not().isEmpty(),
-        check("email", "El correo electrónico  es obligatorio.").isEmail(),
-        check(
-            "password",
-            "La contraseña debe tener mínimo 6 caracteres."
-        ).isLength({
-            min: 6,
-        }),
-        check("lastname", "El apellido  es obligatorio.").not().isEmpty(),
-        check("country", "El país es obligatorio.").not().isEmpty(),
-        check("city", "La cuidad es obligatoria.").not().isEmpty(),
-        check("phone", "El teléfono es opcional.").not().isEmpty(),
+  "/new",
+  [
+    //middlewares
+    check("name", "El nombre es obligatorio.").not().isEmpty(),
+    check("email", "El correo electrónico  es obligatorio.").isEmail(),
+    check("password", "La contraseña debe tener mínimo 6 caracteres.").isLength(
+      {
+        min: 6,
+      }
+    ),
+    check("lastname", "El apellido  es obligatorio.").not().isEmpty(),
+    check("country", "El país es obligatorio.").not().isEmpty(),
+    check("city", "La cuidad es obligatoria.").not().isEmpty(),
+    check("phone", "El teléfono es opcional.").not().isEmpty(),
 
-        validateFields,
-    ],
-    createUser
+    validateFields,
+  ],
+  createUser
 );
 
 router.post(
-    "/",
-    [
-        //middlewares
-        check("email", "El correo electrónico  es obligatorio.").isEmail(),
-        check(
-            "password",
-            "La contraseña debe tener mínimo 6 caracteres."
-        ).isLength({
-            min: 6,
-        }),
-        validateFields,
-    ],
-    loginUser
+  "/",
+  [
+    //middlewares
+    check("email", "El correo electrónico  es obligatorio.").isEmail(),
+    check("password", "La contraseña debe tener mínimo 6 caracteres.").isLength(
+      {
+        min: 6,
+      }
+    ),
+    validateFields,
+  ],
+  loginUser
 );
 
 router.get("/renew", validateJWT, revalidateToken);
 
 router.put(
-    "/edit-profile/:id",
-    [
-        check("id", "No es un ID válido").isMongoId(),
-        check("id").custom(existeUsuarioPorId),
-        validateFields,
-    ],
+  "/edit-profile/:id",
+  [
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(existeUsuarioPorId),
+    validateFields,
+  ],
 
-    editInformationUser
+  editInformationUser
 );
 router.put(
-    "/change-password/:id",
-    [
-        check("id", "No es un ID válido").isMongoId(),
-        check("id").custom(existeUsuarioPorId),
-        validateFields,
-    ],
+  "/change-password/:id",
+  [
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(existeUsuarioPorId),
+    validateFields,
+  ],
 
-    changePassword
+  changePassword
 );
 
 router.post(
-    "/check-email",
-    [
-        //middlewares
-        check("email", "El correo electrónico  es obligatorio.").isEmail(),
+  "/check-email",
+  [
+    //middlewares
+    check("email", "El correo electrónico  es obligatorio.").isEmail(),
 
-        validateFields,
-    ],
-    emailUserPasswordForget
+    validateFields,
+  ],
+  emailUserPasswordForget
 );
-
 
 module.exports = router;
