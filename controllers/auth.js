@@ -147,53 +147,48 @@ const editInformationUser = async (req, res = response) => {
     const { _id, ...resto } = req.body;
 
     const user = await User.findByIdAndUpdate(id, resto);
-    const token = await triggerJWT(
-        user.id,
-        user.name,
-        user.email,
-        user.ciy,
-        user.country,
-        user.lastname,
-        user.phone
-    );
-    console.log(token)
+
     res.json({
         msg: "put API - UsuarioPut",
         id,
         user,
-        token
     });
 };
-const resetForgetPassword = async (req, res = response) => {
-    // const { id } = req.params;
-    const { _id, password, ...resto } = req.body;
 
-    // todo validar contra base de datos
-    if (password) {
-        const salt = bcrypt.genSaltSync();
-        resto.password = bcrypt.hashSync(password, salt);
+const changePassword = async (req, res = response) => {
+    const { id } = req.params;
+    const { password } = req.body; // Nueva contraseña
 
-        const user = await User.findById(id); // Obtener los datos del usuario actualizado
-        // const resetToken = jwt.sign({ userId: id }, 'secret_key', { expiresIn: '1h' });
-        // await sendPasswordResetEmail(user.email, resetToken);
+    try {
+        // Validar si el usuario existe (puedes agregar más validaciones aquí)
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // Generar el hash de la nueva contraseña
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Actualizar la contraseña del usuario
+        user.password = hashedPassword;
+        await user.save();
+
+        // Aquí puedes realizar otras acciones, como enviar un correo electrónico o generar un token JWT si es necesario
+
+        res.json({
+            msg: "Contraseña actualizada exitosamente",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                // ... otros campos del usuario que quieras incluir
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al actualizar la contraseña' });
     }
-    const user = await User.findByIdAndUpdate(id, resto);
-    const token = await triggerJWT(
-        user.id,
-        user.name,
-        user.email,
-        user.ciy,
-        user.country,
-        user.lastname,
-        user.phone
-    );
-    console.log(token)
-    res.json({
-        msg: "put API - UsuarioPut",
-        id,
-        user,
-        token
-    });
 };
 
 const emailUserPasswordForget = async (req, res = response) => {
@@ -240,5 +235,5 @@ module.exports = {
     revalidateToken,
     editInformationUser,
     emailUserPasswordForget,
-    resetForgetPassword
+    changePassword
 };

@@ -9,6 +9,7 @@ const {
     revalidateToken,
     editInformationUser,
     emailUserPasswordForget,
+    changePassword,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
@@ -58,7 +59,7 @@ router.post(
 router.get("/renew", validateJWT, revalidateToken);
 
 router.put(
-    "/forgot-password/:id",
+    "/edit-profile/:id",
     [
         check("id", "No es un ID válido").isMongoId(),
         check("id").custom(existeUsuarioPorId),
@@ -66,6 +67,16 @@ router.put(
     ],
 
     editInformationUser
+);
+router.put(
+    "/change-password/:id",
+    [
+        check("id", "No es un ID válido").isMongoId(),
+        check("id").custom(existeUsuarioPorId),
+        validateFields,
+    ],
+
+    changePassword
 );
 
 router.post(

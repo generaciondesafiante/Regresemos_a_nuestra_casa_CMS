@@ -13,9 +13,8 @@ const sendPasswordResetEmail = async (email, resetToken) => {
     });
 
     let user = await User.findOne({ email });
+    // const resetLink = `http://localhost:3000/resetPassword?id=${user.id}&token=${resetToken}`;
     const resetLink = `http://localhost:3000/resetPassword/${user.id}/${resetToken}`;
-    // const resetLink = ``;
-    console.log(user.email,resetToken)
     await transporter.sendMail({
         from: user.email, // Cambia esto por tu dirección de correo
         to: email,
