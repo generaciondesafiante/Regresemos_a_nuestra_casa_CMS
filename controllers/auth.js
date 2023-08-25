@@ -1,6 +1,6 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const jsonWebToken = require("jsonwebtoken");
 const User = require("../models/User");
 const { triggerJWT } = require("../helpers/jwt");
 const {
@@ -79,7 +79,7 @@ const loginUser = async (req, res = response) => {
     if (!validPassword) {
       return res.status(400).json({
         ok: false,
-        msg: "Password incorrecto",
+        msg: "Contraseña incorrecta",
       });
     }
 
@@ -111,7 +111,7 @@ const loginUser = async (req, res = response) => {
     console.log(error);
     res.status(500).json({
       ok: false,
-      msg: "Por favor hable con el administrador",
+      msg: "Por favor comunícate con el administrador",
     });
   }
 };
@@ -214,7 +214,7 @@ const emailUserPasswordForget = async (req, res = response) => {
         msg: "El usario no existe con ese email",
       });
     }
-    const resetToken = jwt.sign({ userId: id }, "secret_key", {
+    const resetToken = jsonWebToken.sign({ userId: id }, "secret_key", {
       expiresIn: "1h",
     });
     await sendPasswordResetEmail(user.email, resetToken);
@@ -228,7 +228,7 @@ const emailUserPasswordForget = async (req, res = response) => {
     console.log(error);
     res.status(500).json({
       ok: false,
-      msg: "Por favor hable con el administrador",
+      msg: "Por favor comunícate con el administrador",
     });
   }
 };
