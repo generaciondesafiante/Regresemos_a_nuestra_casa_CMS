@@ -13,58 +13,11 @@ const createUser = async (req, res = response) => {
   try {
     let user = await User.findOne({ email });
 
-<<<<<<< HEAD
-        if (user) {
-            return res.status(400).json({
-                ok: false,
-                msg: "Un usuario ya existe con este correo",
-            });
-        }
-
-        user = new User(req.body);
-
-        //encrypt password with bcryptjs
-        const salt = bcrypt.genSaltSync();
-        user.password = bcrypt.hashSync(password, salt);
-
-        await user.save();
-
-        //* trigger jwt
-        const token = await triggerJWT(
-            user.id,
-            user.name,
-            user.lastname,
-            user.country,
-            user.city,
-            user.phone,
-            user.image,
-        );
-
-        return res.status(201).json({
-            ok: true,
-            uid: user.id,
-            name: user.name,
-            email: user.email,
-            lastname: user.lastname,
-            country: user.country,
-            city: user.city,
-            phone: user.phone,
-            image: user.image,
-            token,
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            ok: false,
-            msg: "Por favor hable con el administrador",
-        });
-=======
     if (user) {
       return res.status(400).json({
         ok: false,
         msg: "Un usuario ya existe con este correo",
       });
->>>>>>> 5b5ed71ab0f75745c118f36d0aee1af31329e259
     }
 
     user = new User(req.body);
@@ -82,7 +35,8 @@ const createUser = async (req, res = response) => {
       user.lastname,
       user.country,
       user.city,
-      user.phone
+      user.phone,
+      user.image
     );
 
     return res.status(201).json({
@@ -94,6 +48,7 @@ const createUser = async (req, res = response) => {
       country: user.country,
       city: user.city,
       phone: user.phone,
+      image: user.image,
       token,
     });
   } catch (error) {
@@ -113,62 +68,11 @@ const loginUser = async (req, res = response) => {
   try {
     let user = await User.findOne({ email });
 
-<<<<<<< HEAD
-        if (!user) {
-            return res.status(400).json({
-                ok: false,
-                msg: "El usario no existe con ese email",
-            });
-        }
-
-        //* confirmar los passwords
-        const validPassword = bcrypt.compareSync(password, user.password);
-
-        if (!validPassword) {
-            return res.status(400).json({
-                ok: false,
-                msg: "Password incorrecto",
-            });
-        }
-
-        //*Generar nuestro Jwt
-
-        const token = await triggerJWT(
-            user.id,
-            user.name,
-            user.email,
-            user.ciy,
-            user.country,
-            user.lastname,
-            user.phone,
-            user.image,
-        );
-
-        res.json({
-            ok: true,
-            uid: user.id,
-            lastname: user.lastname,
-            name: user.name,
-            email: user.email,
-            city: user.city,
-            country: user.country,
-            phone: user.phone,
-            image: user.image,
-            token,
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            ok: false,
-            msg: "Por favor hable con el administrador",
-        });
-=======
     if (!user) {
       return res.status(400).json({
         ok: false,
         msg: "El usario no existe con ese email",
       });
->>>>>>> 5b5ed71ab0f75745c118f36d0aee1af31329e259
     }
 
     //* confirm the passwords
@@ -190,7 +94,8 @@ const loginUser = async (req, res = response) => {
       user.ciy,
       user.country,
       user.lastname,
-      user.phone
+      user.phone,
+      user.image,
     );
 
     res.json({
@@ -202,7 +107,7 @@ const loginUser = async (req, res = response) => {
       city: user.city,
       country: user.country,
       phone: user.phone,
-
+      image: user.image,
       token,
     });
   } catch (error) {
@@ -304,7 +209,8 @@ const emailUserPasswordForget = async (req, res = response) => {
       user.ciy,
       user.country,
       user.lastname,
-      user.phone
+      user.phone,
+      user.image,
     );
     if (!user) {
       return res.status(400).json({
