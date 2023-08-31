@@ -32,7 +32,8 @@ const createUser = async (req, res = response) => {
             user.lastname,
             user.country,
             user.city,
-            user.phone
+            user.phone,
+            user.image,
         );
 
         return res.status(201).json({
@@ -44,6 +45,7 @@ const createUser = async (req, res = response) => {
             country: user.country,
             city: user.city,
             phone: user.phone,
+            image: user.image,
             token,
         });
     } catch (error) {
@@ -89,7 +91,8 @@ const loginUser = async (req, res = response) => {
             user.ciy,
             user.country,
             user.lastname,
-            user.phone
+            user.phone,
+            user.image,
         );
 
         res.json({
@@ -101,7 +104,7 @@ const loginUser = async (req, res = response) => {
             city: user.city,
             country: user.country,
             phone: user.phone,
-
+            image: user.image,
             token,
         });
     } catch (error) {
