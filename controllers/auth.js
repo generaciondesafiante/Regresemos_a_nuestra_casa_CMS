@@ -191,7 +191,35 @@ const changePassword = async (req, res = response) => {
     res.status(500).json({ message: "Error al actualizar la contraseña" });
   }
 };
+const validatePassword = async(req, res = response) => {
+  const { id } = req.body;
+  const { password } = req.body;
+  const validateCurrentPassword = async (currentPassword, hashedPassword) => {
+    try {
+      return await bcrypt.compare(currentPassword, hashedPassword);
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+  try {
+    // Validate if the user exists
+    const user = await User.findById(id);
+    console.log('usuario encontrad0')
+    if (!user) {
+      console.log('pailas mijo')
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
 
+    // Validate the current password
+    const isCurrentPasswordValid = await validateCurrentPassword(password, user.password);
+
+    res.json({ isCurrentPasswordValid });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al validar la contraseña actual" });
+  }
+}
 const emailUserPasswordForget = async (req, res = response) => {
   const { id } = req.params;
 
@@ -239,4 +267,5 @@ module.exports = {
   editInformationUser,
   emailUserPasswordForget,
   changePassword,
+  validatePassword
 };

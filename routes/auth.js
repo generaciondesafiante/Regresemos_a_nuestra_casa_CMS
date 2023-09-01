@@ -10,6 +10,7 @@ const {
   editInformationUser,
   emailUserPasswordForget,
   changePassword,
+  validatePassword,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
@@ -77,6 +78,16 @@ router.put(
   changePassword
 );
 
+router.post(
+  "/validate-password",
+  [
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(existeUsuarioPorId),
+    validateFields,
+  ],
+
+  validatePassword
+);
 router.post(
   "/check-email",
   [
