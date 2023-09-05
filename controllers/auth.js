@@ -62,7 +62,6 @@ const createUser = async (req, res = response) => {
 
 const loginUser = async (req, res = response) => {
   const { email, password } = req.body;
-
   try {
     let user = await User.findOne({ email });
 
@@ -192,6 +191,46 @@ const changePassword = async (req, res = response) => {
   }
 };
 
+const validatePassword = async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  try {
+    // Busca al usuario en la base de datos utilizando el ID
+    const user = await User.findById(id);
+
+    // Verifica si el usuario existe
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Usuario no encontrado",
+      });
+    }
+
+    // Compara la contraseña proporcionada con la contraseña almacenada en la base de datos
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Contraseña incorrecta",
+      });
+    }
+
+    // Si la contraseña es válida, puedes responder con éxito
+    res.status(200).json({
+      ok: true,
+      msg: "Contraseña válida",
+    });
+  } catch (error) {
+    console.error("Error al validar la contraseña:", error);
+    res.status(500).json({
+      ok: false,
+      msg: "Por favor comuníquese con el administrador",
+    });
+  }
+};
+
 const emailUserPasswordForget = async (req, res = response) => {
   const { id } = req.params;
 
@@ -239,4 +278,5 @@ module.exports = {
   editInformationUser,
   emailUserPasswordForget,
   changePassword,
+  validatePassword,
 };
