@@ -196,10 +196,9 @@ const validatePassword = async (req, res) => {
   const { password } = req.body;
 
   try {
-    // Busca al usuario en la base de datos utilizando el ID
+
     const user = await User.findById(id);
 
-    // Verifica si el usuario existe
     if (!user) {
       return res.status(404).json({
         ok: false,
@@ -207,7 +206,6 @@ const validatePassword = async (req, res) => {
       });
     }
 
-    // Compara la contraseña proporcionada con la contraseña almacenada en la base de datos
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -217,7 +215,6 @@ const validatePassword = async (req, res) => {
       });
     }
 
-    // Si la contraseña es válida, puedes responder con éxito
     res.status(200).json({
       ok: true,
       msg: "Contraseña válida",
@@ -226,7 +223,7 @@ const validatePassword = async (req, res) => {
     console.error("Error al validar la contraseña:", error);
     res.status(500).json({
       ok: false,
-      msg: "Por favor comuníquese con el administrador",
+      msg: "Por favor comunícate con el administrador",
     });
   }
 };
