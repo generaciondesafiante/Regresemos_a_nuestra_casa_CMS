@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const CourseSchema = new Schema({
-    idtema: {
+    id: {
         type: Number,
         // auto: true,
         unique: true,
@@ -18,7 +18,7 @@ const CourseSchema = new Schema({
     },
     content: [
         {
-            idvideo: {
+            idVideo: {
                 type: Number,
                 unique: true,
             },
