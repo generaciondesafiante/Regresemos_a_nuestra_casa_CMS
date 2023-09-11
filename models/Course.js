@@ -18,7 +18,7 @@ const CourseSchema = new Schema({
     },
     content: [
         {
-            idvideo: {
+            idVideo: {
                 type: Number,
                 unique: true,
             },
