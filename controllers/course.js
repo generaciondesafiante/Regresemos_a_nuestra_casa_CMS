@@ -6,10 +6,10 @@ const coursesData = async (req, res = response) => {
 
 
     try {
-        let course = await Course.find();
+        let courses = await Course.find();
         res.json({
             ok: true,
-            course,
+            courses,
         })
 
     } catch (error) {
