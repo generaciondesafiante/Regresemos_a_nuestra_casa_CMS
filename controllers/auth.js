@@ -35,7 +35,8 @@ const createUser = async (req, res = response) => {
       user.lastname,
       user.country,
       user.city,
-      user.phone
+      user.phone,
+      user.image
     );
 
     return res.status(201).json({
@@ -47,6 +48,7 @@ const createUser = async (req, res = response) => {
       country: user.country,
       city: user.city,
       phone: user.phone,
+      image: user.image,
       token,
     });
   } catch (error) {
@@ -62,7 +64,6 @@ const createUser = async (req, res = response) => {
 
 const loginUser = async (req, res = response) => {
   const { email, password } = req.body;
-
   try {
     let user = await User.findOne({ email });
 
@@ -92,7 +93,8 @@ const loginUser = async (req, res = response) => {
       user.ciy,
       user.country,
       user.lastname,
-      user.phone
+      user.phone,
+      user.image,
     );
 
     res.json({
@@ -104,7 +106,7 @@ const loginUser = async (req, res = response) => {
       city: user.city,
       country: user.country,
       phone: user.phone,
-
+      image: user.image,
       token,
     });
   } catch (error) {
@@ -192,6 +194,43 @@ const changePassword = async (req, res = response) => {
   }
 };
 
+const validatePassword = async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  try {
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Usuario no encontrado",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Contraseña incorrecta",
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      msg: "Contraseña válida",
+    });
+  } catch (error) {
+    console.error("Error al validar la contraseña:", error);
+    res.status(500).json({
+      ok: false,
+      msg: "Por favor comunícate con el administrador",
+    });
+  }
+};
+
 const emailUserPasswordForget = async (req, res = response) => {
   const { id } = req.params;
 
@@ -206,7 +245,8 @@ const emailUserPasswordForget = async (req, res = response) => {
       user.ciy,
       user.country,
       user.lastname,
-      user.phone
+      user.phone,
+      user.image,
     );
     if (!user) {
       return res.status(400).json({
@@ -239,4 +279,5 @@ module.exports = {
   editInformationUser,
   emailUserPasswordForget,
   changePassword,
+  validatePassword,
 };

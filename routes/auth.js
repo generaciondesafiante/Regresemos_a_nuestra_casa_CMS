@@ -10,6 +10,7 @@ const {
   editInformationUser,
   emailUserPasswordForget,
   changePassword,
+  validatePassword,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
@@ -33,6 +34,7 @@ router.post(
     check("country", "El país es obligatorio.").not().isEmpty(),
     check("city", "La cuidad es obligatoria.").not().isEmpty(),
     check("phone", "El teléfono es opcional.").not().isEmpty(),
+    check("image", "La imagen es opcional").not().isEmpty(),
 
     validateFields,
   ],
@@ -76,7 +78,15 @@ router.put(
 
   changePassword
 );
+router.post(
+  "/validate-password/:id",
+  [
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(existeUsuarioPorId),
+  ],
 
+  validatePassword
+);
 router.post(
   "/check-email",
   [

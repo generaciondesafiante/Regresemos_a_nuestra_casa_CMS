@@ -11,7 +11,7 @@ const sendPasswordResetEmail = async (email, resetToken) => {
   });
 
   let user = await User.findOne({ email });
-  const resetLink = `https://regresemos-a-nuestra-casa-ui-hajm.vercel.app/resetPassword/${user.id}/${resetToken}`;
+  const resetLink = `https://regresemos-a-nuestra-casa-ui.vercel.app/resetPassword/${user.id}/${resetToken}`;
   await transporter.sendMail({
     from: user.email, //user email
     to: email,
