@@ -1,10 +1,10 @@
-
 const { Router } = require("express");
-const { coursesData } = require("../controllers/course");
+const { updateVideoStatus } = require("../controllers/course");
 const router = Router();
 
-router.get("/coursedata",
-    coursesData
+router.put(
+  "/updateVideoStatus/:id/:courseId/:topicId/:lessonId/:videoId",
+  updateVideoStatus
 );
 
 module.exports = router;

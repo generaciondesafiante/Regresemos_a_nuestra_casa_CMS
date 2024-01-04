@@ -94,7 +94,7 @@ const loginUser = async (req, res = response) => {
       user.country,
       user.lastname,
       user.phone,
-      user.image,
+      user.image
     );
 
     res.json({
@@ -199,7 +199,6 @@ const validatePassword = async (req, res) => {
   const { password } = req.body;
 
   try {
-
     const user = await User.findById(id);
 
     if (!user) {
@@ -246,7 +245,7 @@ const emailUserPasswordForget = async (req, res = response) => {
       user.country,
       user.lastname,
       user.phone,
-      user.image,
+      user.image
     );
     if (!user) {
       return res.status(400).json({
@@ -272,6 +271,7 @@ const emailUserPasswordForget = async (req, res = response) => {
     });
   }
 };
+
 module.exports = {
   createUser,
   loginUser,
