@@ -8,7 +8,7 @@ const dbConection = async () => {
       useCreateIndex: true,
       useFindAndModify: false,
     });
-    // todo This line is to internally determine the connection to the database
+    //This line is to internally determine the connection to the database
     console.log("Db online");
   } catch (error) {
     console.log(error);
