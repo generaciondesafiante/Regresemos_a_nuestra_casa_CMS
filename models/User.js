@@ -1,6 +1,11 @@
 const { Schema, model } = require("mongoose");
 
-const videoSchema = new Schema({
+const lessonSchema = new Schema({
+  idLesson: {
+    type: String,
+    required: false,
+    unique: true,
+  },
   idVideo: {
     type: String,
     required: false,
@@ -10,15 +15,6 @@ const videoSchema = new Schema({
     type: Boolean,
     default: false,
   },
-});
-
-const lessonSchema = new Schema({
-  idLesson: {
-    type: String,
-    required: false,
-    unique: true,
-  },
-  videos: [videoSchema],
 });
 
 const topicSchema = new Schema({

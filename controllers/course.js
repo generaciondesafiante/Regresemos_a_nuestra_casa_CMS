@@ -3,6 +3,7 @@ const User = require("../models/User");
 const updateVideoStatus = async (req, res = response) => {
   const { id, courseId, topicId, lessonId, videoId } = req.params;
   const { viewVideo } = req.body;
+  console.log(viewVideo, "estdoVideo", videoId, "id video");
 
   try {
     const user = await User.findOne({ _id: id });
@@ -27,12 +28,8 @@ const updateVideoStatus = async (req, res = response) => {
             lessons: [
               {
                 idLesson: lessonId,
-                videos: [
-                  {
-                    idVideo: videoId,
-                    viewVideo,
-                  },
-                ],
+                idVideo: videoId,
+                viewVideo: viewVideo,
               },
             ],
           },
@@ -49,12 +46,8 @@ const updateVideoStatus = async (req, res = response) => {
           lessons: [
             {
               idLesson: lessonId,
-              videos: [
-                {
-                  idVideo: videoId,
-                  viewVideo,
-                },
-              ],
+              idVideo: videoId,
+              viewVideo: true,
             },
           ],
         });
@@ -66,12 +59,8 @@ const updateVideoStatus = async (req, res = response) => {
         if (lessonIndex === -1) {
           user.CourseProgress[courseIndex].topics[topicIndex].lessons.push({
             idLesson: lessonId,
-            videos: [
-              {
-                idVideo: videoId,
-                viewVideo,
-              },
-            ],
+            idVideo: videoId,
+            viewVideo: true,
           });
         } else {
           let videoIndex = user.CourseProgress[courseIndex].topics[

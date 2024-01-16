@@ -11,10 +11,10 @@ const {
   emailUserPasswordForget,
   changePassword,
   validatePassword,
+  userInformations,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
-const { course } = require("../controllers/course");
 const { existeUsuarioPorId } = require("../helpers/db-validators");
 
 const router = Router();
@@ -41,6 +41,7 @@ router.post(
   createUser
 );
 
+router.post("/userinformations", userInformations);
 router.post(
   "/",
   [

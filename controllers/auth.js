@@ -7,7 +7,7 @@ const {
   sendPasswordResetEmail,
 } = require("../middlewares/validate-email-reset-password");
 
-//Todo: register
+// register
 const createUser = async (req, res = response) => {
   const { email, password } = req.body;
   try {
@@ -60,7 +60,40 @@ const createUser = async (req, res = response) => {
   }
 };
 
-//todo: Login
+// get information user
+const userInformations = async (req, res = response) => {
+  const { id } = req.body;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: "El usario no existe con ese ID",
+      });
+    }
+    res.json({
+      ok: true,
+      uid: user.id,
+      lastname: user.lastname,
+      name: user.name,
+      email: user.email,
+      city: user.city,
+      country: user.country,
+      phone: user.phone,
+      image: user.image,
+      CourseProgress: user.CourseProgress,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Por favor comunícate con el administrador",
+    });
+  }
+};
+// Login
 
 const loginUser = async (req, res = response) => {
   const { email, password } = req.body;
@@ -107,6 +140,7 @@ const loginUser = async (req, res = response) => {
       country: user.country,
       phone: user.phone,
       image: user.image,
+      CourseProgress: user.CourseProgress,
       token,
     });
   } catch (error) {
@@ -118,7 +152,7 @@ const loginUser = async (req, res = response) => {
   }
 };
 
-//todo: renew token
+// renew token
 
 const revalidateToken = async (req, res = response) => {
   const { name, email, uid, city, lastname, phone, country } = req;
@@ -280,4 +314,5 @@ module.exports = {
   emailUserPasswordForget,
   changePassword,
   validatePassword,
+  userInformations,
 };
