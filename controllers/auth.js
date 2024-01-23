@@ -84,6 +84,7 @@ const userInformations = async (req, res = response) => {
       phone: user.phone,
       image: user.image,
       CourseProgress: user.CourseProgress,
+      lastViewedInfo: user.lastViewedInfo,
     });
   } catch (error) {
     console.log(error);
@@ -195,7 +196,7 @@ const editInformationUser = async (req, res = response) => {
 
 const changePassword = async (req, res = response) => {
   const { id } = req.params;
-  const { password } = req.body; // new password
+  const { password } = req.body;
 
   try {
     // Validate if the user exists (you can add more validations here
