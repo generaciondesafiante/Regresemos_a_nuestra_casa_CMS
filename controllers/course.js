@@ -112,18 +112,15 @@ const lastViewedVideo = async (req, res = response) => {
       });
     }
 
-    user.lastViewedInfo = [
-      {
-        courseName,
-        idCourse: courseId,
-        idVideo: videoId,
-        tema,
-        indexTopic,
-        urlVideo,
-      },
-    ];
-
-    await user.save();
+    (user.lastViewedInfo = {
+      courseName,
+      idCourse: courseId,
+      idVideo: videoId,
+      tema,
+      indexTopic,
+      urlVideo,
+    }),
+      await user.save();
     res.json({
       ok: true,
       msg: "Estado del ultimo video visualizado actualizado correctamente",
