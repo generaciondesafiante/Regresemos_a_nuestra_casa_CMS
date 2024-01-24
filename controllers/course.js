@@ -2,8 +2,6 @@ const User = require("../models/User");
 
 const updateVideoStatus = async (req, res = response) => {
   const { id, courseId, topicId, lessonId, videoId } = req.params;
-  const { viewVideo } = req.body;
-  console.log(viewVideo, "estdoVideo", videoId, "id video");
 
   try {
     const user = await User.findOne({ _id: id });
@@ -82,9 +80,10 @@ const updateVideoStatus = async (req, res = response) => {
         }
       }
     }
-
+    user.lastViewedInfo = user.lastViewedInfo.filter(
+      (info) => info.idCourse !== courseId || info.idVideo !== videoId
+    );
     await user.save();
-
     res.json({
       ok: true,
       msg: "Estado del video actualizado correctamente",
@@ -98,6 +97,42 @@ const updateVideoStatus = async (req, res = response) => {
   }
 };
 
+const lastViewedVideo = async (req, res = response) => {
+  const { id } = req.params;
+  const { courseName, courseId, videoId, tema, indexTopic, urlVideo } =
+    req.body;
+
+  try {
+    const user = await User.findOne({ _id: id });
+
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Usuario no encontrado",
+      });
+    }
+
+    (user.lastViewedInfo = {
+      courseName,
+      idCourse: courseId,
+      idVideo: videoId,
+      tema,
+      indexTopic,
+      urlVideo,
+    }),
+      await user.save();
+    res.json({
+      ok: true,
+      msg: "Estado del ultimo video visualizado actualizado correctamente",
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+    });
+  }
+};
+
 module.exports = {
   updateVideoStatus,
+  lastViewedVideo,
 };
