@@ -10,6 +10,7 @@ const {
 // register
 const createUser = async (req, res = response) => {
   const { email, password } = req.body;
+
   try {
     let user = await User.findOne({ email });
 
@@ -25,7 +26,8 @@ const createUser = async (req, res = response) => {
     //encrypt password with bcryptjs
     const salt = bcrypt.genSaltSync();
     user.password = bcrypt.hashSync(password, salt);
-
+    user.image =
+      "http://somebooks.es/wp-content/uploads/2018/12/Poner-una-imagen-a-la-cuenta-de-usuario-en-Windows-10-000.png";
     await user.save();
 
     //* trigger jwt
@@ -55,7 +57,7 @@ const createUser = async (req, res = response) => {
     console.log(error);
     res.status(500).json({
       ok: false,
-      msg: "Por favor hable con el administrador",
+      msg: "Error en nuestro servidor, comunícate con el administrador del grupo para tu registro.",
     });
   }
 };
