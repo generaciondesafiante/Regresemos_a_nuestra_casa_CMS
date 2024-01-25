@@ -15,6 +15,9 @@ const lessonSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  typeLesson: {
+    type: String,
+  },
 });
 
 const topicSchema = new Schema({
