@@ -7,9 +7,10 @@ const {
   sendPasswordResetEmail,
 } = require("../middlewares/validate-email-reset-password");
 
-//Todo: register
+// register
 const createUser = async (req, res = response) => {
-  const { email, password } = req.body;
+  const { email, password, phone } = req.body;
+
   try {
     let user = await User.findOne({ email });
 
@@ -25,7 +26,9 @@ const createUser = async (req, res = response) => {
     //encrypt password with bcryptjs
     const salt = bcrypt.genSaltSync();
     user.password = bcrypt.hashSync(password, salt);
-
+    user.image =
+      "http://somebooks.es/wp-content/uploads/2018/12/Poner-una-imagen-a-la-cuenta-de-usuario-en-Windows-10-000.png";
+    user.phone = phone || null;
     await user.save();
 
     //* trigger jwt
@@ -55,12 +58,46 @@ const createUser = async (req, res = response) => {
     console.log(error);
     res.status(500).json({
       ok: false,
-      msg: "Por favor hable con el administrador",
+      msg: "Error en nuestro servidor, comunícate con el administrador del grupo para tu registro.",
     });
   }
 };
 
-//todo: Login
+// get information user
+const userInformations = async (req, res = response) => {
+  const { id } = req.body;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: "El usario no existe con ese ID",
+      });
+    }
+    res.json({
+      ok: true,
+      uid: user.id,
+      lastname: user.lastname,
+      name: user.name,
+      email: user.email,
+      city: user.city,
+      country: user.country,
+      phone: user.phone,
+      image: user.image,
+      CourseProgress: user.CourseProgress,
+      lastViewedInfo: user.lastViewedInfo,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Por favor comunícate con el administrador",
+    });
+  }
+};
+// Login
 
 const loginUser = async (req, res = response) => {
   const { email, password } = req.body;
@@ -94,7 +131,7 @@ const loginUser = async (req, res = response) => {
       user.country,
       user.lastname,
       user.phone,
-      user.image,
+      user.image
     );
 
     res.json({
@@ -107,6 +144,7 @@ const loginUser = async (req, res = response) => {
       country: user.country,
       phone: user.phone,
       image: user.image,
+      CourseProgress: user.CourseProgress,
       token,
     });
   } catch (error) {
@@ -118,7 +156,7 @@ const loginUser = async (req, res = response) => {
   }
 };
 
-//todo: renew token
+// renew token
 
 const revalidateToken = async (req, res = response) => {
   const { name, email, uid, city, lastname, phone, country } = req;
@@ -161,7 +199,7 @@ const editInformationUser = async (req, res = response) => {
 
 const changePassword = async (req, res = response) => {
   const { id } = req.params;
-  const { password } = req.body; // new password
+  const { password } = req.body;
 
   try {
     // Validate if the user exists (you can add more validations here
@@ -199,7 +237,6 @@ const validatePassword = async (req, res) => {
   const { password } = req.body;
 
   try {
-
     const user = await User.findById(id);
 
     if (!user) {
@@ -246,7 +283,7 @@ const emailUserPasswordForget = async (req, res = response) => {
       user.country,
       user.lastname,
       user.phone,
-      user.image,
+      user.image
     );
     if (!user) {
       return res.status(400).json({
@@ -272,6 +309,7 @@ const emailUserPasswordForget = async (req, res = response) => {
     });
   }
 };
+
 module.exports = {
   createUser,
   loginUser,
@@ -280,4 +318,5 @@ module.exports = {
   emailUserPasswordForget,
   changePassword,
   validatePassword,
+  userInformations,
 };
