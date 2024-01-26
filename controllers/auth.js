@@ -9,7 +9,7 @@ const {
 
 // register
 const createUser = async (req, res = response) => {
-  const { email, password } = req.body;
+  const { email, password, phone } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -28,6 +28,7 @@ const createUser = async (req, res = response) => {
     user.password = bcrypt.hashSync(password, salt);
     user.image =
       "http://somebooks.es/wp-content/uploads/2018/12/Poner-una-imagen-a-la-cuenta-de-usuario-en-Windows-10-000.png";
+    user.phone = phone || null;
     await user.save();
 
     //* trigger jwt
