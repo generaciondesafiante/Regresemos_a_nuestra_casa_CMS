@@ -107,7 +107,7 @@ const loginUser = async (req, res = response) => {
     if (!user) {
       return res.status(400).json({
         ok: false,
-        msg: "El usario no existe con ese email",
+        msg: "Usuario o contraseña incorrecta",
       });
     }
 
@@ -117,7 +117,7 @@ const loginUser = async (req, res = response) => {
     if (!validPassword) {
       return res.status(400).json({
         ok: false,
-        msg: "Contraseña incorrecta",
+        msg: "Usuario o contraseña incorrecta",
       });
     }
 
@@ -151,7 +151,7 @@ const loginUser = async (req, res = response) => {
     console.log(error);
     res.status(500).json({
       ok: false,
-      msg: "Por favor comunícate con el administrador",
+      msg: "Comunícate con el administrador del grupo.",
     });
   }
 };
