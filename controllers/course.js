@@ -2,6 +2,7 @@ const User = require("../models/User");
 
 const updateVideoStatus = async (req, res = response) => {
   const { id, courseId, topicId, lessonId, videoId } = req.params;
+  const { viewVideo } = req.body;
 
   try {
     const user = await User.findOne({ _id: id });
@@ -80,9 +81,13 @@ const updateVideoStatus = async (req, res = response) => {
         }
       }
     }
-    user.lastViewedInfo = user.lastViewedInfo.filter(
-      (info) => info.idCourse !== courseId || info.idVideo !== videoId
-    );
+
+    user.lastViewedInfo = Array.isArray(user.lastViewedInfo)
+      ? user.lastViewedInfo.filter(
+          (info) => info.idCourse !== courseId || info.idVideo !== videoId
+        )
+      : [];
+
     await user.save();
     res.json({
       ok: true,
