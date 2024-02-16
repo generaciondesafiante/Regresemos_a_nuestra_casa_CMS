@@ -108,8 +108,8 @@ const lastViewedVideo = async (req, res = response) => {
     req.body;
 
   try {
-    const user = await User.findOne({ _id: id });
-
+    let user = await User.findOne({ _id: id });
+    // console.log(user);
     if (!user) {
       return res.status(404).json({
         ok: false,
@@ -117,22 +117,52 @@ const lastViewedVideo = async (req, res = response) => {
       });
     }
 
-    (user.lastViewedInfo = {
-      courseName,
-      idCourse: courseId,
-      idVideo: videoId,
-      tema,
-      indexTopic,
-      urlVideo,
-    }),
-      await user.save();
+    // Si la propiedad lastViewedInfo no existe, crearla como un array vacío
+    if (!user.lastViewedInfo) {
+      user.lastViewedInfo = [];
+    }
+
+    // Encontrar el curso en el que se está trabajando
+    let courseIndex = user.lastViewedInfo.findIndex(
+      (info) => info.idCourse === courseId
+    );
+
+    if (courseIndex !== -1) {
+      // Si el curso ya ha sido visto, actualizar su información
+      user.lastViewedInfo[courseIndex] = {
+        courseName,
+        idCourse: courseId,
+        idVideo: videoId,
+        tema,
+        indexTopic,
+        urlVideo,
+      };
+    } else {
+      // Si el curso es nuevo, agregarlo a los últimos 3 cursos vistos
+      if (user.lastViewedInfo.length === 3) {
+        // Si ya hay 3 cursos, eliminar el primero para dar espacio al nuevo
+        user.lastViewedInfo.shift();
+      }
+      // Agregar el nuevo curso al final de la lista
+      user.lastViewedInfo.push({
+        courseName,
+        idCourse: courseId,
+        idVideo: videoId,
+        tema,
+        indexTopic,
+        urlVideo,
+      });
+    }
+
+    await user.save();
     res.json({
       ok: true,
-      msg: "Estado del ultimo video visualizado actualizado correctamente",
+      msg: "Estado del último video visualizado actualizado correctamente",
     });
   } catch (error) {
     res.status(500).json({
       ok: false,
+      msg: "Error al actualizar el estado del video. Por favor, comunícate con el administrador.",
     });
   }
 };
