@@ -82,8 +82,8 @@ const updateVideoStatus = async (req, res = response) => {
       }
     }
 
-    user.lastViewedInfo = Array.isArray(user.lastViewedInfo)
-      ? user.lastViewedInfo.filter(
+    user.lastViewedVideos = Array.isArray(user.lastViewedVideos)
+      ? user.lastViewedVideos.filter(
           (info) => info.idCourse !== courseId || info.idVideo !== videoId
         )
       : [];
@@ -102,14 +102,13 @@ const updateVideoStatus = async (req, res = response) => {
   }
 };
 
-const lastViewedVideo = async (req, res = response) => {
+const lastViewedVideos = async (req, res = response) => {
   const { id } = req.params;
   const { courseName, courseId, videoId, tema, indexTopic, urlVideo } =
     req.body;
 
   try {
     let user = await User.findOne({ _id: id });
-    // console.log(user);
     if (!user) {
       return res.status(404).json({
         ok: false,
@@ -117,19 +116,16 @@ const lastViewedVideo = async (req, res = response) => {
       });
     }
 
-    // Si la propiedad lastViewedInfo no existe, crearla como un array vacío
-    if (!user.lastViewedInfo) {
-      user.lastViewedInfo = [];
+    if (!user.lastViewedVideos) {
+      user.lastViewedVideos = [];
     }
 
-    // Encontrar el curso en el que se está trabajando
-    let courseIndex = user.lastViewedInfo.findIndex(
+    let courseIndex = user.lastViewedVideos.findIndex(
       (info) => info.idCourse === courseId
     );
 
     if (courseIndex !== -1) {
-      // Si el curso ya ha sido visto, actualizar su información
-      user.lastViewedInfo[courseIndex] = {
+      user.lastViewedVideos[courseIndex] = {
         courseName,
         idCourse: courseId,
         idVideo: videoId,
@@ -138,13 +134,10 @@ const lastViewedVideo = async (req, res = response) => {
         urlVideo,
       };
     } else {
-      // Si el curso es nuevo, agregarlo a los últimos 3 cursos vistos
-      if (user.lastViewedInfo.length === 3) {
-        // Si ya hay 3 cursos, eliminar el primero para dar espacio al nuevo
-        user.lastViewedInfo.shift();
+      if (user.lastViewedVideos.length === 3) {
+        user.lastViewedVideos.shift();
       }
-      // Agregar el nuevo curso al final de la lista
-      user.lastViewedInfo.push({
+      user.lastViewedVideos.push({
         courseName,
         idCourse: courseId,
         idVideo: videoId,
@@ -169,5 +162,5 @@ const lastViewedVideo = async (req, res = response) => {
 
 module.exports = {
   updateVideoStatus,
-  lastViewedVideo,
+  lastViewedVideos,
 };

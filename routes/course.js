@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { updateVideoStatus, lastViewedVideo } = require("../controllers/course");
+const { updateVideoStatus, lastViewedVideos } = require("../controllers/course");
 const router = Router();
 
 router.put(
@@ -7,6 +7,6 @@ router.put(
   updateVideoStatus
 );
 
-router.put("/lastViewedVideo/:id", lastViewedVideo);
+router.put("/lastViewedVideos/:id", lastViewedVideos);
 
 module.exports = router;

@@ -73,7 +73,7 @@ const UserSchema = new Schema({
   },
 
   CourseProgress: [courseSchema],
-  lastViewedInfo: [
+  lastViewedVideos: [
     {
       courseName: {
         type: String,
