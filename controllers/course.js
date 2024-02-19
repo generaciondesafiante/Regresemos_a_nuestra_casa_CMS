@@ -82,8 +82,8 @@ const updateVideoStatus = async (req, res = response) => {
       }
     }
 
-    user.lastViewedInfo = Array.isArray(user.lastViewedInfo)
-      ? user.lastViewedInfo.filter(
+    user.lastViewedVideos = Array.isArray(user.lastViewedVideos)
+      ? user.lastViewedVideos.filter(
           (info) => info.idCourse !== courseId || info.idVideo !== videoId
         )
       : [];
@@ -102,14 +102,13 @@ const updateVideoStatus = async (req, res = response) => {
   }
 };
 
-const lastViewedVideo = async (req, res = response) => {
+const lastViewedVideos = async (req, res = response) => {
   const { id } = req.params;
   const { courseName, courseId, videoId, tema, indexTopic, urlVideo } =
     req.body;
 
   try {
-    const user = await User.findOne({ _id: id });
-
+    let user = await User.findOne({ _id: id });
     if (!user) {
       return res.status(404).json({
         ok: false,
@@ -117,27 +116,51 @@ const lastViewedVideo = async (req, res = response) => {
       });
     }
 
-    (user.lastViewedInfo = {
-      courseName,
-      idCourse: courseId,
-      idVideo: videoId,
-      tema,
-      indexTopic,
-      urlVideo,
-    }),
-      await user.save();
+    if (!user.lastViewedVideos) {
+      user.lastViewedVideos = [];
+    }
+
+    let courseIndex = user.lastViewedVideos.findIndex(
+      (info) => info.idCourse === courseId
+    );
+
+    if (courseIndex !== -1) {
+      user.lastViewedVideos[courseIndex] = {
+        courseName,
+        idCourse: courseId,
+        idVideo: videoId,
+        tema,
+        indexTopic,
+        urlVideo,
+      };
+    } else {
+      if (user.lastViewedVideos.length === 3) {
+        user.lastViewedVideos.shift();
+      }
+      user.lastViewedVideos.push({
+        courseName,
+        idCourse: courseId,
+        idVideo: videoId,
+        tema,
+        indexTopic,
+        urlVideo,
+      });
+    }
+
+    await user.save();
     res.json({
       ok: true,
-      msg: "Estado del ultimo video visualizado actualizado correctamente",
+      msg: "Estado del último video visualizado actualizado correctamente",
     });
   } catch (error) {
     res.status(500).json({
       ok: false,
+      msg: "Error al actualizar el estado del video. Por favor, comunícate con el administrador.",
     });
   }
 };
 
 module.exports = {
   updateVideoStatus,
-  lastViewedVideo,
+  lastViewedVideos,
 };

@@ -87,7 +87,7 @@ const userInformations = async (req, res = response) => {
       phone: user.phone,
       image: user.image,
       CourseProgress: user.CourseProgress,
-      lastViewedInfo: user.lastViewedInfo,
+      lastViewedVideos: user.lastViewedVideos,
     });
   } catch (error) {
     console.log(error);

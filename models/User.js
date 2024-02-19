@@ -78,30 +78,32 @@ const UserSchema = new Schema({
   },
 
   CourseProgress: [courseSchema],
-  lastViewedInfo: {
-    courseName: {
-      type: String,
+  lastViewedVideos: [
+    {
+      courseName: {
+        type: String,
+      },
+      idCourse: {
+        type: String,
+        required: false,
+        unique: true,
+      },
+      idVideo: {
+        type: String,
+        required: false,
+        unique: true,
+      },
+      tema: {
+        type: String,
+      },
+      indexTopic: {
+        type: String,
+      },
+      urlVideo: {
+        type: String,
+      },
     },
-    idCourse: {
-      type: String,
-      required: false,
-      unique: true,
-    },
-    idVideo: {
-      type: String,
-      required: false,
-      unique: true,
-    },
-    tema: {
-      type: String,
-    },
-    indexTopic: {
-      type: String,
-    },
-    urlVideo: {
-      type: String,
-    },
-  },
+  ],
 });
 
 const User = model("User", UserSchema);
