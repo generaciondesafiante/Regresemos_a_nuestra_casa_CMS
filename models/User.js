@@ -18,6 +18,9 @@ const lessonSchema = new Schema({
   typeLesson: {
     type: String,
   },
+  sequentialLesson: {
+    type: String,
+  },
 });
 
 const topicSchema = new Schema({
@@ -27,6 +30,7 @@ const topicSchema = new Schema({
     unique: true,
   },
   lessons: [lessonSchema],
+  sequentialTopic: { type: String },
 });
 
 const courseSchema = new Schema({
@@ -35,6 +39,7 @@ const courseSchema = new Schema({
     required: false,
     unique: true,
   },
+  mandatory: { type: Boolean },
   topics: [topicSchema],
 });
 
