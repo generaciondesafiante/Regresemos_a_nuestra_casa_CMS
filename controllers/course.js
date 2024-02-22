@@ -1,8 +1,15 @@
 const User = require("../models/User");
 
-const updateVideoStatus = async (req, res = response) => {
-  const { id, courseId, topicId, lessonId, videoId } = req.params;
-  const { viewVideo } = req.body;
+const coursesProgressUser = async (req, res = response) => {
+  const {
+    id,
+    courseId,
+    topicId,
+    lessonId,
+    videoId,
+    viewVideo,
+    sequentialTopic,
+  } = req.body;
 
   try {
     const user = await User.findOne({ _id: id });
@@ -24,6 +31,7 @@ const updateVideoStatus = async (req, res = response) => {
         topics: [
           {
             idTopic: topicId,
+            sequentialTopic: sequentialTopic,
             lessons: [
               {
                 idLesson: lessonId,
@@ -103,8 +111,7 @@ const updateVideoStatus = async (req, res = response) => {
 };
 
 const lastViewedVideos = async (req, res = response) => {
-  const { id } = req.params;
-  const { courseName, courseId, videoId, tema, indexTopic, urlVideo } =
+  const { id, courseName, courseId, videoId, tema, indexTopic, urlVideo } =
     req.body;
 
   try {
@@ -115,7 +122,6 @@ const lastViewedVideos = async (req, res = response) => {
         msg: "Usuario no encontrado",
       });
     }
-
     if (!user.lastViewedVideos) {
       user.lastViewedVideos = [];
     }
@@ -161,6 +167,6 @@ const lastViewedVideos = async (req, res = response) => {
 };
 
 module.exports = {
-  updateVideoStatus,
+  coursesProgressUser,
   lastViewedVideos,
 };
