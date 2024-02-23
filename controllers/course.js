@@ -123,7 +123,7 @@ const lastViewedVideos = async (req, res = response) => {
     }
 
     let courseIndex = user.lastViewedVideos.findIndex(
-      (info) => info.idCourse === courseId
+      (info) => info.courseId === courseId
     );
 
     if (courseIndex !== -1) {
