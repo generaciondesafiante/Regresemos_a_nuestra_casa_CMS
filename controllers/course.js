@@ -1,9 +1,22 @@
 const User = require("../models/User");
 
-const updateVideoStatus = async (req, res = response) => {
-  const { id, courseId, topicId, lessonId, videoId } = req.params;
-  const { viewVideo } = req.body;
-
+const coursesProgressUser = async (req, res = response) => {
+  const {
+    id,
+    courseId,
+    topicId,
+    lessonId,
+    videoId,
+    viewVideo,
+    sequentialTopic,
+    sequentialLesson,
+  } = req.body;
+  if (sequentialTopic === undefined) {
+    return res.status(400).json({
+      ok: false,
+      msg: "La propiedad sequentialTopic no está definida en la solicitud.",
+    });
+  }
   try {
     const user = await User.findOne({ _id: id });
 
@@ -13,20 +26,20 @@ const updateVideoStatus = async (req, res = response) => {
         msg: "Usuario no encontrado",
       });
     }
-
-    let courseIndex = user.CourseProgress.findIndex(
+    const courseProgress = user.CourseProgress.find(
       (c) => c.idCourse === courseId
     );
-
-    if (courseIndex === -1) {
+    if (!courseProgress) {
       user.CourseProgress.push({
         idCourse: courseId,
         topics: [
           {
             idTopic: topicId,
+            sequentialTopic: sequentialTopic,
             lessons: [
               {
                 idLesson: lessonId,
+                sequentialLesson: sequentialLesson,
                 idVideo: videoId,
                 viewVideo: viewVideo,
               },
@@ -35,60 +48,43 @@ const updateVideoStatus = async (req, res = response) => {
         ],
       });
     } else {
-      let topicIndex = user.CourseProgress[courseIndex].topics.findIndex(
-        (t) => t.idTopic === topicId
-      );
+      if (sequentialTopic > courseProgress.topics[0].sequentialTopic) {
+        const topics = [
+          {
+            idTopic: topicId,
+            sequentialTopic: sequentialTopic,
+            lessons: [
+              {
+                idLesson: lessonId,
+                sequentialLesson: sequentialLesson,
+                idVideo: videoId,
+                viewVideo: viewVideo,
+              },
+            ],
+          },
+        ];
 
-      if (topicIndex === -1) {
-        user.CourseProgress[courseIndex].topics.push({
-          idTopic: topicId,
-          lessons: [
+        courseProgress.topics = topics;
+        await user.save();
+      } else if (sequentialTopic === courseProgress.topics[0].sequentialTopic) {
+        const findSequentialLesson =
+          courseProgress.topics[0].lessons[0].sequentialLesson;
+        if (sequentialLesson > findSequentialLesson) {
+          const lesson = [
             {
               idLesson: lessonId,
+              sequentialLesson: sequentialLesson,
               idVideo: videoId,
-              viewVideo: true,
+              viewVideo: viewVideo,
             },
-          ],
-        });
-      } else {
-        let lessonIndex = user.CourseProgress[courseIndex].topics[
-          topicIndex
-        ].lessons.findIndex((l) => l.idLesson === lessonId);
-
-        if (lessonIndex === -1) {
-          user.CourseProgress[courseIndex].topics[topicIndex].lessons.push({
-            idLesson: lessonId,
-            idVideo: videoId,
-            viewVideo: true,
-          });
-        } else {
-          let videoIndex = user.CourseProgress[courseIndex].topics[
-            topicIndex
-          ].lessons[lessonIndex].videos.findIndex((v) => v.idVideo === videoId);
-
-          if (videoIndex === -1) {
-            user.CourseProgress[courseIndex].topics[topicIndex].lessons[
-              lessonIndex
-            ].videos.push({
-              idVideo: videoId,
-              viewVideo,
-            });
-          } else {
-            user.CourseProgress[courseIndex].topics[topicIndex].lessons[
-              lessonIndex
-            ].videos[videoIndex].viewVideo = viewVideo;
-          }
+          ];
+          courseProgress.topics[0].lessons = lesson;
+          await user.save();
         }
       }
     }
-
-    user.lastViewedVideos = Array.isArray(user.lastViewedVideos)
-      ? user.lastViewedVideos.filter(
-          (info) => info.idCourse !== courseId || info.idVideo !== videoId
-        )
-      : [];
-
     await user.save();
+
     res.json({
       ok: true,
       msg: "Estado del video actualizado correctamente",
@@ -103,9 +99,16 @@ const updateVideoStatus = async (req, res = response) => {
 };
 
 const lastViewedVideos = async (req, res = response) => {
-  const { id } = req.params;
-  const { courseName, courseId, videoId, tema, indexTopic, urlVideo } =
-    req.body;
+  const {
+    id,
+    courseName,
+    courseId,
+    videoId,
+    topicName,
+    sequentialTopic,
+    URLVideo,
+    videoViewed,
+  } = req.body;
 
   try {
     let user = await User.findOne({ _id: id });
@@ -115,23 +118,23 @@ const lastViewedVideos = async (req, res = response) => {
         msg: "Usuario no encontrado",
       });
     }
-
     if (!user.lastViewedVideos) {
       user.lastViewedVideos = [];
     }
 
     let courseIndex = user.lastViewedVideos.findIndex(
-      (info) => info.idCourse === courseId
+      (info) => info.courseId === courseId
     );
 
     if (courseIndex !== -1) {
       user.lastViewedVideos[courseIndex] = {
         courseName,
-        idCourse: courseId,
-        idVideo: videoId,
-        tema,
-        indexTopic,
-        urlVideo,
+        courseId: courseId,
+        videoId: videoId,
+        topicName,
+        sequentialTopic,
+        URLVideo,
+        videoViewed: videoViewed,
       };
     } else {
       if (user.lastViewedVideos.length === 3) {
@@ -139,11 +142,12 @@ const lastViewedVideos = async (req, res = response) => {
       }
       user.lastViewedVideos.push({
         courseName,
-        idCourse: courseId,
-        idVideo: videoId,
-        tema,
-        indexTopic,
-        urlVideo,
+        courseId: courseId,
+        videoId: videoId,
+        topicName,
+        sequentialTopic,
+        URLVideo,
+        videoViewed,
       });
     }
 
@@ -161,6 +165,6 @@ const lastViewedVideos = async (req, res = response) => {
 };
 
 module.exports = {
-  updateVideoStatus,
+  coursesProgressUser,
   lastViewedVideos,
 };

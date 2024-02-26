@@ -83,23 +83,26 @@ const UserSchema = new Schema({
       courseName: {
         type: String,
       },
-      idCourse: {
+      courseId: {
         type: String,
         required: false,
         unique: true,
       },
-      idVideo: {
+      videoId: {
         type: String,
         required: false,
         unique: true,
       },
-      tema: {
+      topicName: {
         type: String,
       },
-      indexTopic: {
+      sequentialTopic: {
         type: String,
       },
-      urlVideo: {
+      URLVideo: {
+        type: String,
+      },
+      videoViewed:{
         type: String,
       },
     },
