@@ -1,9 +1,22 @@
 const User = require("../models/User");
 
-const updateVideoStatus = async (req, res = response) => {
-  const { id, courseId, topicId, lessonId, videoId } = req.params;
-  const { viewVideo } = req.body;
-
+const coursesProgressUser = async (req, res = response) => {
+  const {
+    id,
+    courseId,
+    topicId,
+    lessonId,
+    videoId,
+    viewVideo,
+    sequentialTopic,
+    sequentialLesson,
+  } = req.body;
+  if (sequentialTopic === undefined) {
+    return res.status(400).json({
+      ok: false,
+      msg: "La propiedad sequentialTopic no está definida en la solicitud.",
+    });
+  }
   try {
     const user = await User.findOne({ _id: id });
 
@@ -13,20 +26,20 @@ const updateVideoStatus = async (req, res = response) => {
         msg: "Usuario no encontrado",
       });
     }
-
-    let courseIndex = user.CourseProgress.findIndex(
+    const courseProgress = user.CourseProgress.find(
       (c) => c.idCourse === courseId
     );
-
-    if (courseIndex === -1) {
+    if (!courseProgress) {
       user.CourseProgress.push({
         idCourse: courseId,
         topics: [
           {
             idTopic: topicId,
+            sequentialTopic: sequentialTopic,
             lessons: [
               {
                 idLesson: lessonId,
+                sequentialLesson: sequentialLesson,
                 idVideo: videoId,
                 viewVideo: viewVideo,
               },
@@ -35,60 +48,43 @@ const updateVideoStatus = async (req, res = response) => {
         ],
       });
     } else {
-      let topicIndex = user.CourseProgress[courseIndex].topics.findIndex(
-        (t) => t.idTopic === topicId
-      );
+      if (sequentialTopic > courseProgress.topics[0].sequentialTopic) {
+        const topics = [
+          {
+            idTopic: topicId,
+            sequentialTopic: sequentialTopic,
+            lessons: [
+              {
+                idLesson: lessonId,
+                sequentialLesson: sequentialLesson,
+                idVideo: videoId,
+                viewVideo: viewVideo,
+              },
+            ],
+          },
+        ];
 
-      if (topicIndex === -1) {
-        user.CourseProgress[courseIndex].topics.push({
-          idTopic: topicId,
-          lessons: [
+        courseProgress.topics = topics;
+        await user.save();
+      } else if (sequentialTopic === courseProgress.topics[0].sequentialTopic) {
+        const findSequentialLesson =
+          courseProgress.topics[0].lessons[0].sequentialLesson;
+        if (sequentialLesson > findSequentialLesson) {
+          const lesson = [
             {
               idLesson: lessonId,
+              sequentialLesson: sequentialLesson,
               idVideo: videoId,
-              viewVideo: true,
+              viewVideo: viewVideo,
             },
-          ],
-        });
-      } else {
-        let lessonIndex = user.CourseProgress[courseIndex].topics[
-          topicIndex
-        ].lessons.findIndex((l) => l.idLesson === lessonId);
-
-        if (lessonIndex === -1) {
-          user.CourseProgress[courseIndex].topics[topicIndex].lessons.push({
-            idLesson: lessonId,
-            idVideo: videoId,
-            viewVideo: true,
-          });
-        } else {
-          let videoIndex = user.CourseProgress[courseIndex].topics[
-            topicIndex
-          ].lessons[lessonIndex].videos.findIndex((v) => v.idVideo === videoId);
-
-          if (videoIndex === -1) {
-            user.CourseProgress[courseIndex].topics[topicIndex].lessons[
-              lessonIndex
-            ].videos.push({
-              idVideo: videoId,
-              viewVideo,
-            });
-          } else {
-            user.CourseProgress[courseIndex].topics[topicIndex].lessons[
-              lessonIndex
-            ].videos[videoIndex].viewVideo = viewVideo;
-          }
+          ];
+          courseProgress.topics[0].lessons = lesson;
+          await user.save();
         }
       }
     }
-
-    user.lastViewedInfo = Array.isArray(user.lastViewedInfo)
-      ? user.lastViewedInfo.filter(
-          (info) => info.idCourse !== courseId || info.idVideo !== videoId
-        )
-      : [];
-
     await user.save();
+
     res.json({
       ok: true,
       msg: "Estado del video actualizado correctamente",
@@ -102,42 +98,73 @@ const updateVideoStatus = async (req, res = response) => {
   }
 };
 
-const lastViewedVideo = async (req, res = response) => {
-  const { id } = req.params;
-  const { courseName, courseId, videoId, tema, indexTopic, urlVideo } =
-    req.body;
+const lastViewedVideos = async (req, res = response) => {
+  const {
+    id,
+    courseName,
+    courseId,
+    videoId,
+    topicName,
+    sequentialTopic,
+    URLVideo,
+    videoViewed,
+  } = req.body;
 
   try {
-    const user = await User.findOne({ _id: id });
-
+    let user = await User.findOne({ _id: id });
     if (!user) {
       return res.status(404).json({
         ok: false,
         msg: "Usuario no encontrado",
       });
     }
+    if (!user.lastViewedVideos) {
+      user.lastViewedVideos = [];
+    }
 
-    (user.lastViewedInfo = {
-      courseName,
-      idCourse: courseId,
-      idVideo: videoId,
-      tema,
-      indexTopic,
-      urlVideo,
-    }),
-      await user.save();
+    let courseIndex = user.lastViewedVideos.findIndex(
+      (info) => info.courseId === courseId
+    );
+
+    if (courseIndex !== -1) {
+      user.lastViewedVideos[courseIndex] = {
+        courseName,
+        courseId: courseId,
+        videoId: videoId,
+        topicName,
+        sequentialTopic,
+        URLVideo,
+        videoViewed: videoViewed,
+      };
+    } else {
+      if (user.lastViewedVideos.length === 3) {
+        user.lastViewedVideos.shift();
+      }
+      user.lastViewedVideos.push({
+        courseName,
+        courseId: courseId,
+        videoId: videoId,
+        topicName,
+        sequentialTopic,
+        URLVideo,
+        videoViewed,
+      });
+    }
+
+    await user.save();
     res.json({
       ok: true,
-      msg: "Estado del ultimo video visualizado actualizado correctamente",
+      msg: "Estado del último video visualizado actualizado correctamente",
     });
   } catch (error) {
     res.status(500).json({
       ok: false,
+      msg: "Error al actualizar el estado del video. Por favor, comunícate con el administrador.",
     });
   }
 };
 
 module.exports = {
-  updateVideoStatus,
-  lastViewedVideo,
+  coursesProgressUser,
+  lastViewedVideos,
 };

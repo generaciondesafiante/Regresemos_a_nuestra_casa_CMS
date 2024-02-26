@@ -18,6 +18,9 @@ const lessonSchema = new Schema({
   typeLesson: {
     type: String,
   },
+  sequentialLesson: {
+    type: String,
+  },
 });
 
 const topicSchema = new Schema({
@@ -27,6 +30,7 @@ const topicSchema = new Schema({
     unique: true,
   },
   lessons: [lessonSchema],
+  sequentialTopic: { type: String },
 });
 
 const courseSchema = new Schema({
@@ -35,6 +39,7 @@ const courseSchema = new Schema({
     required: false,
     unique: true,
   },
+  mandatory: { type: Boolean },
   topics: [topicSchema],
 });
 
@@ -73,30 +78,35 @@ const UserSchema = new Schema({
   },
 
   CourseProgress: [courseSchema],
-  lastViewedInfo: {
-    courseName: {
-      type: String,
+  lastViewedVideos: [
+    {
+      courseName: {
+        type: String,
+      },
+      courseId: {
+        type: String,
+        required: false,
+        unique: true,
+      },
+      videoId: {
+        type: String,
+        required: false,
+        unique: true,
+      },
+      topicName: {
+        type: String,
+      },
+      sequentialTopic: {
+        type: String,
+      },
+      URLVideo: {
+        type: String,
+      },
+      videoViewed:{
+        type: String,
+      },
     },
-    idCourse: {
-      type: String,
-      required: false,
-      unique: true,
-    },
-    idVideo: {
-      type: String,
-      required: false,
-      unique: true,
-    },
-    tema: {
-      type: String,
-    },
-    indexTopic: {
-      type: String,
-    },
-    urlVideo: {
-      type: String,
-    },
-  },
+  ],
 });
 
 const User = model("User", UserSchema);

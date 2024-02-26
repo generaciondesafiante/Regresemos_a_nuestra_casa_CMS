@@ -1,12 +1,12 @@
 const { Router } = require("express");
-const { updateVideoStatus, lastViewedVideo } = require("../controllers/course");
+const {
+  coursesProgressUser,
+  lastViewedVideos,
+} = require("../controllers/course");
 const router = Router();
 
-router.put(
-  "/updateVideoStatus/:id/:courseId/:topicId/:lessonId/:videoId",
-  updateVideoStatus
-);
+router.put("/courseProgress", coursesProgressUser);
 
-router.put("/lastViewedVideo/:id", lastViewedVideo);
+router.put("/lastViewedVideos", lastViewedVideos);
 
 module.exports = router;

@@ -55,7 +55,7 @@ const createUser = async (req, res = response) => {
       token,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       ok: false,
       msg: "Error en nuestro servidor, comunícate con el administrador del grupo para tu registro.",
@@ -87,10 +87,10 @@ const userInformations = async (req, res = response) => {
       phone: user.phone,
       image: user.image,
       CourseProgress: user.CourseProgress,
-      lastViewedInfo: user.lastViewedInfo,
+      lastViewedVideos: user.lastViewedVideos,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       ok: false,
       msg: "Por favor comunícate con el administrador",
@@ -148,7 +148,7 @@ const loginUser = async (req, res = response) => {
       token,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       ok: false,
       msg: "Comunícate con el administrador del grupo.",
@@ -302,7 +302,7 @@ const emailUserPasswordForget = async (req, res = response) => {
       token,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       ok: false,
       msg: "Por favor comunícate con el administrador",
