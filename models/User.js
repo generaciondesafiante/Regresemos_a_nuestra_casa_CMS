@@ -4,12 +4,10 @@ const lessonSchema = new Schema({
   idLesson: {
     type: String,
     required: false,
-    unique: true,
   },
   idVideo: {
     type: String,
     required: false,
-    unique: true,
   },
   viewVideo: {
     type: Boolean,
@@ -27,7 +25,6 @@ const topicSchema = new Schema({
   idTopic: {
     type: String,
     required: false,
-    unique: true,
   },
   lessons: [lessonSchema],
   sequentialTopic: { type: String },
@@ -37,7 +34,6 @@ const courseSchema = new Schema({
   idCourse: {
     type: String,
     required: false,
-    unique: true,
   },
   mandatory: { type: Boolean },
   topics: [topicSchema],
@@ -51,7 +47,6 @@ const UserSchema = new Schema({
   email: {
     type: String,
     require: true,
-    unique: true,
   },
   password: {
     type: String,
@@ -86,12 +81,10 @@ const UserSchema = new Schema({
       courseId: {
         type: String,
         required: false,
-        unique: true,
       },
       videoId: {
         type: String,
         required: false,
-        unique: true,
       },
       topicName: {
         type: String,
@@ -102,7 +95,7 @@ const UserSchema = new Schema({
       URLVideo: {
         type: String,
       },
-      videoViewed:{
+      videoViewed: {
         type: String,
       },
     },
