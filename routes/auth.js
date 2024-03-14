@@ -32,6 +32,9 @@ router.post(
     ),
     check("lastname", "El apellido  es obligatorio.").not().isEmpty(),
     check("country", "El país es obligatorio.").not().isEmpty(),
+    check("phone", "El teléfono debe ser un número válido.")
+      .optional()
+      .isNumeric(),
     check("city", "La cuidad es obligatoria.").not().isEmpty(),
     validateFields,
   ],
