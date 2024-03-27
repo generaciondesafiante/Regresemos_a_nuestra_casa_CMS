@@ -71,7 +71,9 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
-
+  admin:{
+    type:Boolean
+  },
   CourseProgress: [courseSchema],
   lastViewedVideos: [
     {
