@@ -29,6 +29,7 @@ const createUser = async (req, res = response) => {
     user.image =
       "http://somebooks.es/wp-content/uploads/2018/12/Poner-una-imagen-a-la-cuenta-de-usuario-en-Windows-10-000.png";
     user.phone = phone || null;
+    user.admin = false;
     await user.save();
 
     //* trigger jwt
@@ -39,7 +40,8 @@ const createUser = async (req, res = response) => {
       user.country,
       user.city,
       user.phone,
-      user.image
+      user.image,
+      user.admin
     );
 
     return res.status(201).json({
@@ -52,6 +54,7 @@ const createUser = async (req, res = response) => {
       city: user.city,
       phone: user.phone,
       image: user.image,
+      admin: user.admin,
       token,
     });
   } catch (error) {
@@ -86,6 +89,7 @@ const userInformations = async (req, res = response) => {
       country: user.country,
       phone: user.phone,
       image: user.image,
+      admin: user.admin,
       CourseProgress: user.CourseProgress,
       lastViewedVideos: user.lastViewedVideos,
     });
@@ -131,7 +135,8 @@ const loginUser = async (req, res = response) => {
       user.country,
       user.lastname,
       user.phone,
-      user.image
+      user.image,
+      user.admin
     );
 
     res.json({
@@ -144,6 +149,7 @@ const loginUser = async (req, res = response) => {
       country: user.country,
       phone: user.phone,
       image: user.image,
+      admin: user.admin,
       CourseProgress: user.CourseProgress,
       token,
     });
@@ -159,7 +165,7 @@ const loginUser = async (req, res = response) => {
 // renew token
 
 const revalidateToken = async (req, res = response) => {
-  const { name, email, uid, city, lastname, phone, country } = req;
+  const { name, email, uid, city, lastname, phone, country , admin} = req;
 
   //* generate a new JWT and return it in this request
   const token = await triggerJWT(
@@ -169,7 +175,8 @@ const revalidateToken = async (req, res = response) => {
     city,
     country,
     phone,
-    lastname
+    lastname,
+    admin
   );
 
   res.json({
@@ -182,6 +189,7 @@ const revalidateToken = async (req, res = response) => {
     country,
     phone,
     token,
+    admin
   });
 };
 const editInformationUser = async (req, res = response) => {

@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 
-const triggerJWT = (uid, name, email, lastname, country, city, phone) => {
+const triggerJWT = (uid, name, email, lastname, country, city, phone,admin) => {
     return new Promise((resolve, reject) => {
-        const payload = { uid, name, email, lastname, country, city, phone };
+        const payload = { uid, name, email, lastname, country, city, phone,admin };
 
         jwt.sign(
             payload,
