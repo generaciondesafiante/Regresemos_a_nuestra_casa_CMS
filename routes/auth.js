@@ -12,6 +12,8 @@ const {
   changePassword,
   validatePassword,
   userInformations,
+  allStudents,
+  allAdmins,
 } = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
@@ -99,4 +101,7 @@ router.post(
   emailUserPasswordForget
 );
 
+router.get("/students/count/:id", allStudents);
+
+router.get("/admins/:id", allAdmins);
 module.exports = router;

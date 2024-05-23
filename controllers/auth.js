@@ -165,7 +165,7 @@ const loginUser = async (req, res = response) => {
 // renew token
 
 const revalidateToken = async (req, res = response) => {
-  const { name, email, uid, city, lastname, phone, country , admin} = req;
+  const { name, email, uid, city, lastname, phone, country, admin } = req;
 
   //* generate a new JWT and return it in this request
   const token = await triggerJWT(
@@ -189,7 +189,7 @@ const revalidateToken = async (req, res = response) => {
     country,
     phone,
     token,
-    admin
+    admin,
   });
 };
 const editInformationUser = async (req, res = response) => {
@@ -318,6 +318,67 @@ const emailUserPasswordForget = async (req, res = response) => {
   }
 };
 
+const allStudents = async (req, res = response) => {
+  const { id } = req.params;
+
+  try {
+    const adminUser = await User.findById(id);
+
+    if (!adminUser || !adminUser.admin) {
+      return res.status(403).json({
+        ok: false,
+        msg: "Acceso denegado",
+      });
+    }
+
+    const studentCount = await User.countDocuments({ admin: false });
+
+    res.status(200).json({
+      ok: true,
+      studentCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error",
+    });
+  }
+};
+
+const allAdmins = async (req, res = response) => {
+  const { id } = req.params;
+
+  try {
+    const adminUser = await User.findById(id);
+
+    if (!adminUser || !adminUser.admin) {
+      return res.status(403).json({
+        ok: false,
+        msg: "Acceso denegado",
+      });
+    }
+
+    const admins = await User.find(
+      { admin: true },
+      {
+        _id: 1,
+        name: 1,
+        lastname: 1,
+        image: 1,
+      }
+    );
+
+    if (!admins) {
+      return res.status(404).json({ message: "Admins no es" });
+    }
+
+    res.json({ admins });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 module.exports = {
   createUser,
   loginUser,
@@ -327,4 +388,6 @@ module.exports = {
   changePassword,
   validatePassword,
   userInformations,
+  allStudents,
+  allAdmins,
 };
