@@ -370,7 +370,7 @@ const allAdmins = async (req, res = response) => {
     );
 
     if (!admins) {
-      return res.status(404).json({ message: "Admis no encontrados" });
+      return res.status(404).json({ message: "Administradores no encontrados" });
     }
 
     res.json({ admins });
