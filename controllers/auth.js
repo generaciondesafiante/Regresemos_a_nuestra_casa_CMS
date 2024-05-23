@@ -341,7 +341,7 @@ const allStudents = async (req, res = response) => {
     console.error(error);
     res.status(500).json({
       ok: false,
-      msg: "Error",
+      msg: "Error en el  servidor",
     });
   }
 };
@@ -370,13 +370,13 @@ const allAdmins = async (req, res = response) => {
     );
 
     if (!admins) {
-      return res.status(404).json({ message: "Admins no es" });
+      return res.status(404).json({ message: "Admis no encontrados" });
     }
 
     res.json({ admins });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Error en el servidor" });
   }
 };
 module.exports = {
