@@ -1,23 +1,18 @@
-// Rutas de usuarios /Auth
-// host + /api/auth
-
 const { Router } = require("express");
 const { check } = require("express-validator");
-const {
-  createUser,
-  loginUser,
-  revalidateToken,
-  editInformationUser,
-  emailUserPasswordForget,
-  changePassword,
-  validatePassword,
-  userInformations,
-  allStudents,
-  allAdmins,
-} = require("../controllers/auth");
 const { validateFields } = require("../middlewares/validate-fields");
 const { validateJWT } = require("../middlewares/validate-jwt");
 const { existeUsuarioPorId } = require("../helpers/db-validators");
+const createUser = require("../controllers/auth/createUser");
+const userInformations = require("../controllers/auth/userInformations");
+const loginUser = require("../controllers/auth/loginUser");
+const revalidateToken = require("../controllers/auth/revalidateToken");
+const editInformationUser = require("../controllers/auth/editInfomationUser");
+const changePassword = require("../controllers/auth/changePassword");
+const validatePassword = require("../controllers/auth/validatePassword");
+const emailUserPasswordForget = require("../controllers/auth/emailUserPasswordForget");
+const allStudents = require("../controllers/auth/allStudents");
+const allAdmins = require("../controllers/auth/allAdmins");
 
 const router = Router();
 
@@ -44,6 +39,7 @@ router.post(
 );
 
 router.post("/userinformations", userInformations);
+
 router.post(
   "/",
   [
@@ -71,6 +67,7 @@ router.put(
 
   editInformationUser
 );
+
 router.put(
   "/change-password/:id",
   [
@@ -81,6 +78,7 @@ router.put(
 
   changePassword
 );
+
 router.post(
   "/validate-password/:id",
   [
@@ -90,6 +88,7 @@ router.post(
 
   validatePassword
 );
+
 router.post(
   "/check-email",
   [
@@ -104,4 +103,5 @@ router.post(
 router.get("/students/count/:id", allStudents);
 
 router.get("/admins/:id", allAdmins);
+
 module.exports = router;
