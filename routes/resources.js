@@ -5,6 +5,7 @@ const {
   validateVisibilityType,
 } = require("../middlewares/validate-resources");
 const { validateUserAndRole } = require("../middlewares/validate-rolUser");
+const allResources = require("../controllers/resources/allResources");
 
 const router = Router();
 
@@ -15,5 +16,7 @@ router.post(
   validateVisibilityType,
   createResource
 );
+
+router.get("/resources/:id", validateUserAndRole, allResources);
 
 module.exports = router;
