@@ -3,6 +3,14 @@ const { validateUserAndRole } = require("../../middlewares/validate-rolUser");
 const deleteResource = require("../../controllers/resources/deleteResource");
 
 const router = Router();
+
+/**
+ * @swagger
+ * tags:
+ *   name: Resources
+ *   description: Endpoints for resource management
+ */
+
 /**
  * @swagger
  * /api/resources/deleteResource/{id}/{idResource}:
