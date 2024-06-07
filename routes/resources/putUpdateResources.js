@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const updateResource = require("../../controllers/resources/updateResoruce");
 const { validateUserAndRole } = require("../../middlewares/validate-rolUser");
+const { validateResourceType, validateVisibilityType } = require("../../middlewares/validate-resources");
 
 const router = Router();
 /**
@@ -59,6 +60,8 @@ const router = Router();
 router.put(
   "/updateResource/:id/:idResource",
   validateUserAndRole,
+  validateResourceType,
+  validateVisibilityType,
   updateResource
 );
 
