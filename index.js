@@ -20,7 +20,8 @@ const swaggerSpec = {
     },
     servers: servers,
   },
-  apis: [`${path.join(__dirname, "./routes/*.js")}`],
+  // apis: [`${path.join(__dirname, "./routes/*.js")}`],
+  apis: [`${path.join(__dirname, "./routes/**/*.js")}`],
 };
 
 const corsOptions = {
@@ -49,6 +50,7 @@ app.use(express.json());
 //todo: auth//create, login, renew del token
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/course", require("./routes/course"));
+// app.use("/api/resources", require("./routes/resources"));
 app.use("/api/resources", require("./routes/resources"));
 app.use(
   "/api/doc",
