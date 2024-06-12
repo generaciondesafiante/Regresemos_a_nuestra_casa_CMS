@@ -7,22 +7,50 @@ const router = Router();
  * @swagger
  * /api/course:
  *   get:
- *     summary: Obtiene todos los cursos.
+ *     summary: all Courses
  *     tags: [Courses]
- *     description: Retorna una lista de todos los cursos con su información correspondiente.
  *     responses:
- *       200:
- *         description: OK. La solicitud se ha completado correctamente.
+ *       201:
+ *         description: Courses
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Course'
+ *               type: object
+ *               required:
+ *                 - nameCourse
+ *                 - titleCourse
+ *                 - typeOfRoute
+ *                 - topic
+ *               properties:
+ *                 nameCourse:
+ *                   type: string
+ *                   description: El nombre del curso
+ *                 titleCourse:
+ *                   type: string
+ *                   description: El título del curso
+ *                 typeOfRoute:
+ *                   type: string
+ *                   description: El tipo de ruta para el curso
+ *                 topic:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       nameTopic:
+ *                         type: string
+ *                         description: El nombre del tema
+ *                       resources:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                           description: ID del recurso asociado al tema
+ *             example:
+ *               nameCourse: Nombre del curso
+ *               titleCourse: Título del curso
+ *               typeOfRoute: Tipo de ruta
+ *               topic: []
  *       400:
- *         description: Bad request
- *       404:
- *         description: Not found
+ *         description: Solicitud incorrecta
  */
 
 router.get("/", Courses);
