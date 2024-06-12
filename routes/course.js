@@ -1,12 +1,12 @@
 const { Router } = require("express");
-const {
-  coursesProgressUser,
-  lastViewedVideos,
-} = require("../controllers/course");
+const postCreateCourse = require("./courses/postCourse");
+const postTopicCourse = require("./courses/postTopicCourse");
+const postAddResourceToTopic = require("./courses/postAddResourceToTopic");
+
 const router = Router();
 
-router.put("/courseProgress", coursesProgressUser);
-
-router.put("/lastViewedVideos", lastViewedVideos);
+router.use(postCreateCourse);
+router.use(postTopicCourse);
+router.use(postAddResourceToTopic);
 
 module.exports = router;
