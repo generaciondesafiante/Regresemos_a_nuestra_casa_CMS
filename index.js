@@ -20,7 +20,6 @@ const swaggerSpec = {
     },
     servers: servers,
   },
-  // apis: [`${path.join(__dirname, "./routes/*.js")}`],
   apis: [`${path.join(__dirname, "./routes/**/*.js")}`],
 };
 
