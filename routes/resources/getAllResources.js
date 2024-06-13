@@ -11,24 +11,17 @@ const router = Router();
 
 /**
  * @swagger
- * /api/resources/{id}:
+ * /api/resources:
  *   get:
  *     summary: get all resources
  *     description: get all resources
  *     tags: [Resources]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del usuario
- *         schema:
- *           type: string
  *     responses:
  *       '200':
  *         description: Recursos obtenidos exitosamente
  *       '404':
  *         description: Recursos no encontrados
  */
-router.get("/:id", validateUserAndRole, allResources);
+router.get("/", allResources);
 
 module.exports = router;

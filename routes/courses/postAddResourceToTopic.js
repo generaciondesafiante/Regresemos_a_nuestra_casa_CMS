@@ -6,13 +6,13 @@ const router = Router();
 
 /**
  * @swagger
- * /courses/topics/resources/{id}:
+ * /api/course/topics/resources/{userId}:
  *   post:
  *     summary: Add a new resource to a topic
  *     tags: [Courses]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
  *         schema:
  *           type: string
  *         required: true
@@ -80,5 +80,5 @@ const router = Router();
  *         description: Course or resource or topic not found
  */
 
-router.post("/topics/resources/:id", validateUserAndRole, addResourceToTopic);
+router.post("/topics/resources/:userId", validateUserAndRole, addResourceToTopic);
 module.exports = router;

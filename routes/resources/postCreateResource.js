@@ -18,14 +18,14 @@ const router = Router();
 
 /**
  * @swagger
- * /api/resources/createResource/{id}:
+ * /api/resources/createResource/{userId}:
  *   post:
  *     summary: Create a new resources
  *     description: Create a new resources
  *     tags: [Resources]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
  *         required: true
  *         description: ID del usuario
  *         schema:
@@ -56,7 +56,7 @@ const router = Router();
  */
 
 router.post(
-  "/createResource/:id",
+  "/createResource/:userId",
   validateUserAndRole,
   validateResourceType,
   validateVisibilityType,

@@ -13,14 +13,14 @@ const router = Router();
 
 /**
  * @swagger
- * /api/resources/updateResource/{id}/{idResource}:
+ * /api/resources/updateResource/{userId}/{idResource}:
  *   put:
- *     summary: Actualizar un recurso
- *     description: Actualiza un recurso existente
+ *     summary: Update a resource
+ *     description: Update a resource
  *     tags: [Resources]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
  *         required: true
  *         description: ID del usuario
  *         schema:
@@ -58,7 +58,7 @@ const router = Router();
  *         description: Error en el servidor
  */
 router.put(
-  "/updateResource/:id/:idResource",
+  "/updateResource/:userId/:idResource",
   validateUserAndRole,
   validateResourceType,
   validateVisibilityType,

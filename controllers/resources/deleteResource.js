@@ -5,7 +5,7 @@ const deleteResource = async (req, res = response) => {
   try {
     const { idResource } = req.params;
     const resource = await Resource.findById(idResource);
-    console.log(resource);
+
     if (!resource) {
       return res.status(404).json({ error: "Recurso no encontrado" });
     }
