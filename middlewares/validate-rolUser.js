@@ -1,10 +1,10 @@
 const User = require("../models/User");
 
 const validateUserAndRole = async (req, res = response, next) => {
-  const { id } = req.params;
+  const { userId } = req.params;
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ error: "Usuario no encontrado" });

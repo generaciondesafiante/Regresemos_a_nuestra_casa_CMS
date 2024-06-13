@@ -7,13 +7,13 @@ const router = Router();
 
 /**
  * @swagger
- * /api/course/{id}:
+ * /api/course/{userId}:
  *   post:
  *     summary: Create a new course
  *     tags: [Courses]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
  *         schema:
  *           type: string
  *         required: true
@@ -83,5 +83,5 @@ const router = Router();
  *         description: Bad request
  */
 
-router.post("/:id", validateUserAndRole, validateCourseType, createCourse);
+router.post("/:userId", validateUserAndRole, validateCourseType, createCourse);
 module.exports = router;

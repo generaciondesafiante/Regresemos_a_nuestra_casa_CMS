@@ -13,14 +13,14 @@ const router = Router();
 
 /**
  * @swagger
- * /api/resources/deleteResource/{id}/{idResource}:
+ * /api/resources/deleteResource/{userId}/{idResource}:
  *   delete:
- *     summary: Eliminar un recurso
- *     description: Elimina un recurso por su ID
+ *     summary: Delete a resource
+ *     description: Delete a resource by its ID
  *     tags: [Resources]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
  *         required: true
  *         description: ID del usuario
  *         schema:
@@ -41,7 +41,7 @@ const router = Router();
  */
 
 router.delete(
-  "/deleteResource/:id/:idResource",
+  "/deleteResource/:userId/:idResource",
   validateUserAndRole,
   deleteResource
 );
