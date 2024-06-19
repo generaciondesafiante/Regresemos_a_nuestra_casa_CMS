@@ -9,7 +9,7 @@ const router = Router();
  * @swagger
  *  /api/course/{userId}/updateInfoCourse/{courseId}:
  *    patch:
- *      summary: Actualiza un curso
+ *      summary: Update course information
  *      tags: [Courses]
  *      parameters:
  *        - in: path

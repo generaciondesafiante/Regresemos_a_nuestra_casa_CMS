@@ -8,21 +8,27 @@ const router = Router();
  * @swagger
  * /api/course/{userId}/updateCourse/{courseId}/updateInfoTopicCourse/{topicId}:
  *   patch:
- *     summary: Actualiza el nombre de un tema
- *     tags: [Topics]
+ *     summary: Update the name of a topic within a course
+ *     tags: [Courses]
  *     parameters:
  *       - in: path
- *         name: courseId
+ *         name: userId
+ *         required: true
  *         schema:
  *           type: string
+ *         description: User ID who owns the course.
+ *       - in: path
+ *         name: courseId
  *         required: true
- *         description: ID del curso
+ *         schema:
+ *           type: string
+ *         description: Course ID where the topic belongs.
  *       - in: path
  *         name: topicId
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: ID del tema
+ *         description: Topic ID to update.
  *     requestBody:
  *       required: true
  *       content:
@@ -33,6 +39,7 @@ const router = Router();
  *               nameTopic:
  *                 type: string
  *                 example: "Nuevo Nombre del Tema"
+ *                 description: New name for the topic.
  *     responses:
  *       200:
  *         description: Tema actualizado exitosamente
