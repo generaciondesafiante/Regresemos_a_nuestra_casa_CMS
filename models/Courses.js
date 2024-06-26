@@ -12,14 +12,14 @@ const courseSchema = new Schema(
         resources: [
           {
             _id: { type: Schema.Types.ObjectId, ref: "Resource" },
-            isCompleted: { type: Boolean, required: false }, // Optional for clarity
+            isMandatory: { type: Boolean, required: false },
           },
         ],
       },
     ],
   },
-  { select: { topic: { resources: { isCompleted: { $ne: null } } } } }
-); // Exclude resources with null isCompleted for flexible courses
+  { select: { topic: { resources: { isMandatory: { $ne: null } } } } }
+);
 
 const Course = mongoose.model("Course", courseSchema);
 

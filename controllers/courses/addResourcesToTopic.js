@@ -3,7 +3,7 @@ const Resource = require("../../models/Resources");
 
 const addResourceToTopic = async (req, res) => {
   try {
-    const { courseId, topicId, resourceId, isCompleted } = req.body;
+    const { courseId, topicId, resourceId, isMandatory } = req.body;
 
     const course = await Course.findById(courseId);
     if (!course) {
@@ -30,14 +30,14 @@ const addResourceToTopic = async (req, res) => {
         .send({ error: "El recurso ya está agregado a este tema" });
     }
 
-    if (course.typeOfRoute === "strict" && typeof isCompleted !== "boolean") {
+    if (course.typeOfRoute === "strict" && typeof isMandatory !== "boolean") {
       return res.status(400).send({
         error:
-          "Para cursos flexibles, el valor de isCompleted debe ser obligatorio",
+          "Para cursos flexibles, el valor de isMandatory debe ser obligatorio",
       });
     }
 
-    topic.resources.push({ _id: resource._id, isCompleted });
+    topic.resources.push({ _id: resource._id, isMandatory });
 
     await course.save();
 
