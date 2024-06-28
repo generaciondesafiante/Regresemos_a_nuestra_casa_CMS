@@ -1,5 +1,5 @@
 const VALID_RESOURCE_TYPES = ["video", "audio", "image", "pdf", "link"];
-const VALID_VISIBILITY_TYPES = ["onlyAdmin", "onlyLessons", "all"];
+const VALID_VISIBILITY_TYPES = ["private", "visibleForward", "public", "restrictedIncourse"];
 
 const validateResourceType = (req, res, next) => {
   const { typeResource } = req.body;

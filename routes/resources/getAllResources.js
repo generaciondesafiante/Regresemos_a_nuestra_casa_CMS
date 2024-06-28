@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { validateUserAndRole } = require("../../middlewares/validate-rolUser");
 const allResources = require("../../controllers/resources/allResources");
+
 const router = Router();
 /**
  * @swagger
@@ -11,7 +12,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/resources:
+ * /api/resources/{userId}:
  *   get:
  *     summary: get all resources
  *     description: get all resources
@@ -22,6 +23,6 @@ const router = Router();
  *       '404':
  *         description: Recursos no encontrados
  */
-router.get("/", allResources);
+router.get("/:userId", allResources);
 
 module.exports = router;
