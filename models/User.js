@@ -1,41 +1,26 @@
 const { Schema, model } = require("mongoose");
 
-const lessonSchema = new Schema({
-  idLesson: {
-    type: String,
-    required: false,
-  },
-  idVideo: {
-    type: String,
-    required: false,
-  },
-  viewVideo: {
+const ResourceSchema = new Schema({
+  resource: { type: Schema.Types.ObjectId, ref: "Resource" },
+  isMandatory: { type: Boolean, required: false },
+  viewResorce: {
     type: Boolean,
     default: false,
-  },
-  typeLesson: {
-    type: String,
-  },
-  sequentialLesson: {
-    type: String,
   },
 });
 
 const topicSchema = new Schema({
-  idTopic: {
-    type: String,
-    required: false,
-  },
-  lessons: [lessonSchema],
-  sequentialTopic: { type: String },
+  nameTopic: { type: String },
+  resources: [ResourceSchema],
+  lastViewedResource: { type: Schema.Types.ObjectId, ref: "Resource" },
 });
 
 const courseSchema = new Schema({
-  idCourse: {
-    type: String,
-    required: false,
+  course: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
+  lastViewedTopic: {
+    nameTopic: { type: String },
+    lastViewedResource: { type: Schema.Types.ObjectId, ref: 'Resource' },
   },
-  mandatory: { type: Boolean },
   topics: [topicSchema],
 });
 
@@ -71,8 +56,8 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
-  admin:{
-    type:Boolean
+  admin: {
+    type: Boolean,
   },
   CourseProgress: [courseSchema],
   lastViewedVideos: [
