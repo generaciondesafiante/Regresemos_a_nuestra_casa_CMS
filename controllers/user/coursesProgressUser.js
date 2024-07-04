@@ -6,7 +6,7 @@ const CourseProgress = async (req, res) => {
   const { userId, courseId, topicId, resourceId } = req.body;
 
   try {
-    // Buscar al usuario por ID y hacer populate en CourseProgress y course
+    // Find the user by ID and populate CourseProgress and course
     const user = await User.findById(userId).populate({
       path: "CourseProgress.course",
       populate: {
@@ -24,18 +24,18 @@ const CourseProgress = async (req, res) => {
         .json({ message: "Invalid user course progress structure" });
     }
 
-    // Buscar el progreso del curso del usuario
+    // Find the user's course progress
     let courseProgress = user.CourseProgress.find(
       (cp) => cp.course && cp.course.equals(courseId)
     );
 
-    // Buscar el curso por ID
+    // Find the course by ID
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Encontrar la posición del topicId actual en la lista de temas del curso
+    // Find the position of the current topicId in the course topics list
     const currentTopicIndex = course.topic.findIndex(
       (t) => t._id.toString() === topicId
     );
@@ -54,7 +54,7 @@ const CourseProgress = async (req, res) => {
 
       user.CourseProgress.push(courseProgress);
     } else {
-      // Mostrar el lastViewedTopic guardado en el progreso del usuario
+      // Display the lastViewedTopic stored in the user's progress
 
       const lastViewedTopicId =
         courseProgress?.lastViewedTopic?.topicId ||
@@ -64,7 +64,7 @@ const CourseProgress = async (req, res) => {
         ? course.topic.findIndex((t) => t._id.toString() === lastViewedTopicId)
         : -1;
 
-      // Compara las posiciones del tema actual y del último tema visto
+      // Compare the positions of the current topic and the last viewed topic
       if (currentTopicIndex < lastViewedTopicIndex) {
         return res.status(400).json({
           message:
@@ -89,14 +89,14 @@ const CourseProgress = async (req, res) => {
         });
       }
 
-      // Actualizar el último tema visto y el último recurso visto en ese tema
+      // Update the last viewed topic and the last viewed resource in that topic
       courseProgress.lastViewedTopic = {
         topicId: topicId,
         lastViewedResource: resourceId,
       };
     }
 
-    // Guardar los cambios en el usuario
+    // Save the changes in the user
     await user.save();
 
     res.status(200).json({
