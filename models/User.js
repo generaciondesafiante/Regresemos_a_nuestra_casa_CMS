@@ -1,27 +1,13 @@
 const { Schema, model } = require("mongoose");
 
-const ResourceSchema = new Schema({
-  resource: { type: Schema.Types.ObjectId, ref: "Resource" },
-  isMandatory: { type: Boolean, required: false },
-  viewResorce: {
-    type: Boolean,
-    default: false,
-  },
-});
-
 const topicSchema = new Schema({
-  nameTopic: { type: String },
-  resources: [ResourceSchema],
-  lastViewedResource: { type: Schema.Types.ObjectId, ref: "Resource" },
+  topicId: { type: String },
+  lastViewedResource: { type: String },
 });
 
 const courseSchema = new Schema({
-  course: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
-  lastViewedTopic: {
-    nameTopic: { type: String },
-    lastViewedResource: { type: Schema.Types.ObjectId, ref: 'Resource' },
-  },
-  topics: [topicSchema],
+  course: { type: Schema.Types.ObjectId, ref: "Course", required: true },
+  lastViewedTopic: [topicSchema],
 });
 
 const UserSchema = new Schema({
