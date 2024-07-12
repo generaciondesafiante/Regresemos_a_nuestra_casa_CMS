@@ -55,7 +55,6 @@ const CourseProgress = async (req, res) => {
       user.CourseProgress.push(courseProgress);
     } else {
       // Display the lastViewedTopic stored in the user's progress
-
       const lastViewedTopicId =
         courseProgress?.lastViewedTopic?.topicId ||
         course.topic[0]._id.toString(); // Use optional chaining and default to the first topic's ID
