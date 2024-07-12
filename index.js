@@ -48,8 +48,8 @@ app.use(express.json());
 //Routes
 //todo: auth//create, login, renew del token
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/user", require("./routes/user"));
 app.use("/api/course", require("./routes/course"));
-app.use("/api/resources", require("./routes/resources"));
 app.use("/api/resources", require("./routes/resources"));
 app.use(
   "/api/doc",

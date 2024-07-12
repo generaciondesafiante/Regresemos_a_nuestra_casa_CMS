@@ -11,6 +11,7 @@ const coursesProgressUser = async (req, res = response) => {
     sequentialTopic,
     sequentialLesson,
   } = req.body;
+
   if (sequentialTopic === undefined) {
     return res.status(400).json({
       ok: false,
