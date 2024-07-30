@@ -1,7 +1,6 @@
 const { Router } = require("express");
-const {
-  CourseProgress,
-} = require("../../controllers/user/coursesProgressUser");
+const { updateCourseProgress } = require("../../controllers/user/coursesProgressUser");
+
 
 const router = Router();
 
@@ -56,6 +55,6 @@ const router = Router();
  *         description: Internal server error
  */
 
-router.post("/courseProgress", CourseProgress);
+router.post("/courseProgress", updateCourseProgress);
 
 module.exports = router;

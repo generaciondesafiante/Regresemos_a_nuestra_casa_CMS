@@ -30,12 +30,12 @@ const addResourceToTopic = async (req, res) => {
         .send({ error: "El recurso ya está agregado a este tema" });
     }
 
-    if (course.typeOfRoute === "strict" && typeof isMandatory !== "boolean") {
-      return res.status(400).send({
-        error:
-          "Para cursos flexibles, el valor de isMandatory debe ser obligatorio",
-      });
-    }
+    // if (course.typeOfRoute === "strict" && typeof isMandatory !== "boolean") {
+    //   return res.status(400).send({
+    //     error:
+    //       "Para cursos flexibles, el valor de isMandatory debe ser obligatorio",
+    //   });
+    // }
 
     topic.resources.push({ _id: resource._id, isMandatory });
 

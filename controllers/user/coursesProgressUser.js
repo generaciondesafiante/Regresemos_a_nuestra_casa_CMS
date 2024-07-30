@@ -1,121 +1,128 @@
+const { response } = require("express");
+const mongoose = require("mongoose");
 const User = require("../../models/User");
 const Course = require("../../models/Courses");
 const Resource = require("../../models/Resources");
 
-const CourseProgress = async (req, res) => {
+const updateCourseProgress = async (req, res = response) => {
   const { userId, courseId, topicId, resourceId } = req.body;
 
   try {
-    // Find the user by ID and populate CourseProgress and course
-    const user = await User.findById(userId).populate({
-      path: "CourseProgress.course",
-      populate: {
-        path: "lastViewedTopic",
-      },
-    });
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
 
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!Array.isArray(user.CourseProgress)) {
-      return res
-        .status(500)
-        .json({ message: "Invalid user course progress structure" });
-    }
-
-    // Find the user's course progress
-    let courseProgress = user.CourseProgress.find(
-      (cp) => cp.course && cp.course.equals(courseId)
-    );
-
-    // Find the course by ID
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Find the position of the current topicId in the course topics list
-    const currentTopicIndex = course.topic.findIndex(
-      (t) => t._id.toString() === topicId
-    );
-    if (currentTopicIndex === -1) {
-      return res.status(404).json({ message: "Topic not found in course" });
+    const resource = await Resource.findById(resourceId);
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
     }
+
+    let courseProgress = user.CourseProgress.find(
+      (cp) => cp.course.toString() === courseId
+    );
 
     if (!courseProgress) {
       courseProgress = {
-        course: courseId,
+        course: mongoose.Types.ObjectId(courseId),
         lastViewedTopic: {
-          topicId: topicId,
-          lastViewedResource: resourceId,
+          topic: [
+            {
+              topicId,
+              lastViewedResource: resource,
+            },
+          ],
         },
       };
-
       user.CourseProgress.push(courseProgress);
     } else {
-      // Display the lastViewedTopic stored in the user's progress
+      const topicIndex = course.topic.findIndex(
+        (topic) => topic._id.toString() === topicId
+      );
+      if (topicIndex === -1) {
+        return res.status(400).json({ message: "Invalid topic ID" });
+      }
+
       const lastViewedTopicId =
-        courseProgress?.lastViewedTopic?.topicId ||
-        course.topic[0]._id.toString(); // Use optional chaining and default to the first topic's ID
+        courseProgress.lastViewedTopic.topic.length > 0
+          ? courseProgress.lastViewedTopic.topic[
+              courseProgress.lastViewedTopic.topic.length - 1
+            ].topicId
+          : null;
 
-      const lastViewedTopicIndex = lastViewedTopicId
-        ? course.topic.findIndex((t) => t._id.toString() === lastViewedTopicId)
-        : -1;
-
-      // Compare the positions of the current topic and the last viewed topic
-      if (currentTopicIndex < lastViewedTopicIndex) {
-        return res.status(400).json({
-          message:
-            "Cannot update with a lower or equal last viewed topic position",
-        });
+      let lastViewedTopicIndex = -1;
+      if (lastViewedTopicId) {
+        lastViewedTopicIndex = course.topic.findIndex(
+          (topic) => lastViewedTopicId.toString() === topic._id.toString()
+        );
       }
 
-      const currentResourceIndex = course.topic[
-        currentTopicIndex
-      ]?.resources.findIndex((r) => r._id.toString() === resourceId);
-      const lastViewedResourceId =
-        courseProgress.lastViewedTopic[0]?.lastViewedResource;
-
-      const lastViewedResourcesIndex = course.topic[
-        currentTopicIndex
-      ]?.resources.findIndex((r) => r._id.toString() === lastViewedResourceId);
-
-      if (currentResourceIndex < lastViewedResourcesIndex) {
-        return res.status(400).json({
-          message:
-            "Cannot update with a lower or equal last viewed resource position",
-        });
+      if (lastViewedTopicIndex !== -1 && topicIndex < lastViewedTopicIndex) {
+        return res
+          .status(400)
+          .json({ message: "Cannot update to a previous topic" });
       }
 
-      // Update the last viewed topic and the last viewed resource in that topic
-      courseProgress.lastViewedTopic = {
-        topicId: topicId,
-        lastViewedResource: resourceId,
-      };
+      let topicProgress = courseProgress.lastViewedTopic.topic.find(
+        (t) => t.topicId.toString() === topicId
+      );
+
+      if (!topicProgress) {
+        topicProgress = {
+          topicId,
+          lastViewedResource: resource,
+        };
+        courseProgress.lastViewedTopic.topic.push(topicProgress);
+      } else {
+        const resources = course.topic[topicIndex].resources;
+        const lastViewedResourceIndex = resources.findIndex(
+          (res) =>
+            res._id.toString() ===
+            topicProgress.lastViewedResource._id.toString()
+        );
+        const newResourceIndex = resources.findIndex(
+          (res) => res._id.toString() === resourceId
+        );
+
+        console.log("Last Viewed Resource Index:", lastViewedResourceIndex);
+        console.log("New Resource Index:", newResourceIndex);
+
+        if (newResourceIndex === -1) {
+          return res.status(400).json({ message: "Invalid resource ID" });
+        }
+
+        if (newResourceIndex < lastViewedResourceIndex) {
+          return res.status(400).json({
+            message:
+              "Cannot update to a previous resource within the same topic",
+          });
+        }
+
+        topicProgress.lastViewedResource = resource;
+      }
     }
 
-    // Save the changes in the user
     await user.save();
-
-    res.status(200).json({
-      message: "Progress updated successfully",
-      courseProgress: {
-        course: courseProgress.course,
-        lastViewedTopic: {
-          topicId: courseProgress.lastViewedTopic.topicId,
-          lastViewedResource: courseProgress.lastViewedTopic.lastViewedResource,
-        },
-      },
+    console.log("Updated Course Progress:", courseProgress);
+    return res.status(200).json({
+      message: "Course progress updated successfully",
+      courseProgress,
     });
   } catch (error) {
     console.error("Error updating course progress:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 module.exports = {
-  CourseProgress,
+  updateCourseProgress,
 };
