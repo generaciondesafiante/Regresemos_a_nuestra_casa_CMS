@@ -1,171 +1,82 @@
+const { response } = require("express");
+const mongoose = require("mongoose");
 const User = require("../models/User");
+const Course = require("../models/Courses");
 
-const coursesProgressUser = async (req, res = response) => {
-  const {
-    id,
-    courseId,
-    topicId,
-    lessonId,
-    videoId,
-    viewVideo,
-    sequentialTopic,
-    sequentialLesson,
-  } = req.body;
+const updateCourseProgress1 = async (req, res = response) => {
+  const { userId, courseId, topicId, resourceId } = req.body;
 
-  if (sequentialTopic === undefined) {
-    return res.status(400).json({
-      ok: false,
-      msg: "La propiedad sequentialTopic no está definida en la solicitud.",
-    });
-  }
   try {
-    const user = await User.findOne({ _id: id });
-
-    if (!user) {
-      return res.status(404).json({
-        ok: false,
-        msg: "Usuario no encontrado",
-      });
+    // Verifica si userId es un ObjectId válido
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
-    const courseProgress = user.CourseProgress.find(
-      (c) => c.idCourse === courseId
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    let courseProgress = user.CourseProgress.find(
+      (cp) => cp.course.toString() === courseId
     );
+
     if (!courseProgress) {
-      user.CourseProgress.push({
-        idCourse: courseId,
-        topics: [
-          {
-            idTopic: topicId,
-            sequentialTopic: sequentialTopic,
-            lessons: [
-              {
-                idLesson: lessonId,
-                sequentialLesson: sequentialLesson,
-                idVideo: videoId,
-                viewVideo: viewVideo,
-              },
-            ],
-          },
-        ],
-      });
-    } else {
-      if (sequentialTopic > courseProgress.topics[0].sequentialTopic) {
-        const topics = [
-          {
-            idTopic: topicId,
-            sequentialTopic: sequentialTopic,
-            lessons: [
-              {
-                idLesson: lessonId,
-                sequentialLesson: sequentialLesson,
-                idVideo: videoId,
-                viewVideo: viewVideo,
-              },
-            ],
-          },
-        ];
-
-        courseProgress.topics = topics;
-        await user.save();
-      } else if (sequentialTopic === courseProgress.topics[0].sequentialTopic) {
-        const findSequentialLesson =
-          courseProgress.topics[0].lessons[0].sequentialLesson;
-        if (sequentialLesson > findSequentialLesson) {
-          const lesson = [
-            {
-              idLesson: lessonId,
-              sequentialLesson: sequentialLesson,
-              idVideo: videoId,
-              viewVideo: viewVideo,
-            },
-          ];
-          courseProgress.topics[0].lessons = lesson;
-          await user.save();
-        }
-      }
-    }
-    await user.save();
-
-    res.json({
-      ok: true,
-      msg: "Estado del video actualizado correctamente",
-    });
-  } catch (error) {
-    console.error("Error al actualizar el estado del video:", error);
-    res.status(500).json({
-      ok: false,
-      msg: "Error al actualizar el estado del video. Por favor, comunícate con el administrador.",
-    });
-  }
-};
-
-const lastViewedVideos = async (req, res = response) => {
-  const {
-    id,
-    courseName,
-    courseId,
-    videoId,
-    topicName,
-    sequentialTopic,
-    URLVideo,
-    videoViewed,
-  } = req.body;
-
-  try {
-    let user = await User.findOne({ _id: id });
-    if (!user) {
-      return res.status(404).json({
-        ok: false,
-        msg: "Usuario no encontrado",
-      });
-    }
-    if (!user.lastViewedVideos) {
-      user.lastViewedVideos = [];
-    }
-
-    let courseIndex = user.lastViewedVideos.findIndex(
-      (info) => info.courseId === courseId
-    );
-
-    if (courseIndex !== -1) {
-      user.lastViewedVideos[courseIndex] = {
-        courseName,
-        courseId: courseId,
-        videoId: videoId,
-        topicName,
-        sequentialTopic,
-        URLVideo,
-        videoViewed: videoViewed,
+      // Si el progreso del curso no existe, se crea
+      courseProgress = {
+        course: mongoose.Types.ObjectId(courseId),
+        lastViewedTopic: { topicId, lastViewedResource: resourceId },
       };
+      user.CourseProgress.push(courseProgress);
     } else {
-      if (user.lastViewedVideos.length === 3) {
-        user.lastViewedVideos.shift();
+      const topicIndex = course.topic.findIndex(
+        (topic) => topic._id.toString() === topicId
+      );
+      if (topicIndex === -1) {
+        return res.status(400).json({ message: "Invalid topic ID" });
       }
-      user.lastViewedVideos.push({
-        courseName,
-        courseId: courseId,
-        videoId: videoId,
-        topicName,
-        sequentialTopic,
-        URLVideo,
-        videoViewed,
-      });
+
+      const lastViewedTopicIndex = course.topic.findIndex(
+        (topic) =>
+          courseProgress.lastViewedTopic.topicId === topic._id.toString()
+      );
+
+      if (lastViewedTopicIndex !== -1 && topicIndex < lastViewedTopicIndex) {
+        return res
+          .status(400)
+          .json({ message: "Cannot update to a previous topic" });
+      }
+
+      if (
+        courseProgress.lastViewedTopic.topicId === topicId &&
+        parseInt(resourceId, 10) <
+          parseInt(courseProgress.lastViewedTopic.lastViewedResource, 10)
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Cannot save lower resource progress" });
+      }
+
+      courseProgress.lastViewedTopic = {
+        topicId,
+        lastViewedResource: resourceId,
+      };
     }
 
     await user.save();
-    res.json({
-      ok: true,
-      msg: "Estado del último video visualizado actualizado correctamente",
-    });
+    return res
+      .status(200)
+      .json({ message: "Course progress updated successfully" });
   } catch (error) {
-    res.status(500).json({
-      ok: false,
-      msg: "Error al actualizar el estado del video. Por favor, comunícate con el administrador.",
-    });
+    console.error("Error updating course progress:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 module.exports = {
-  coursesProgressUser,
-  lastViewedVideos,
+  updateCourseProgress1,
 };
