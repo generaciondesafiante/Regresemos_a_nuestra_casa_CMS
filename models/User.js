@@ -1,7 +1,6 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, models } = require("mongoose");
 
 const ResourceSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, ref: "Resource" },
   resourceUrl: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String },
@@ -10,6 +9,14 @@ const ResourceSchema = new Schema({
   typeResource: { type: String },
   visibility: { type: String },
   miniaturaUrl: { type: String },
+});
+
+const LastViewedResourceSchema = new Schema({
+  courseName: { type: String, required: true },
+  courseId: { type: Schema.Types.ObjectId, ref: "Course", required: true },
+  topicName: { type: String, required: true },
+  topicId: { type: Schema.Types.ObjectId, ref: "Topic", required: true },
+  resource: { type: ResourceSchema, required: true },
 });
 
 const topicSchema = new Schema({
@@ -35,19 +42,9 @@ const UserSchema = new Schema({
   image: { type: String },
   admin: { type: Boolean },
   CourseProgress: [courseSchema],
-  lastViewedVideos: [
-    {
-      courseName: { type: String },
-      courseId: { type: String },
-      videoId: { type: String },
-      topicName: { type: String },
-      sequentialTopic: { type: String },
-      URLVideo: { type: String },
-      videoViewed: { type: String },
-    },
-  ],
+  lastViewedResources: [LastViewedResourceSchema],
 });
 
-const User = model("User", UserSchema);
+const User = models.User || model("User", UserSchema);
 
 module.exports = User;
