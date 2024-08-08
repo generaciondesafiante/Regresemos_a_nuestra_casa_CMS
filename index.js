@@ -28,6 +28,10 @@ const corsOptions = {
   credentials: true,
   optionSuccessStatus: 200,
   "Access-Control-Allow-Origin": "*",
+  origin: "*",
+  credentials: true,
+  optionSuccessStatus: 200,
+  "Access-Control-Allow-Origin": "*",
 };
 
 require("dotenv").config();
@@ -61,5 +65,6 @@ app.use(
 
 //listen requests
 app.listen(process.env.PORT, () => {
+  console.log(`Servidor corriendo en puerto ${process.env.PORT}`);
   console.log(`Servidor corriendo en puerto ${process.env.PORT}`);
 });

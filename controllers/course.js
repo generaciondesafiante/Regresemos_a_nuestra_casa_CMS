@@ -77,6 +77,73 @@ const updateCourseProgress1 = async (req, res = response) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+const lastViewedVideos = async (req, res = response) => {
+  const {
+    id,
+    courseName,
+    courseId,
+    videoId,
+    topicName,
+    sequentialTopic,
+    URLVideo,
+    videoViewed,
+  } = req.body;
+
+  try {
+    let user = await User.findOne({ _id: id });
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Usuario no encontrado",
+      });
+    }
+    if (!user.lastViewedVideos) {
+      user.lastViewedVideos = [];
+    }
+
+    let courseIndex = user.lastViewedVideos.findIndex(
+      (info) => info.courseId === courseId
+    );
+
+    if (courseIndex !== -1) {
+      user.lastViewedVideos[courseIndex] = {
+        courseName,
+        courseId: courseId,
+        videoId: videoId,
+        topicName,
+        sequentialTopic,
+        URLVideo,
+        videoViewed: videoViewed,
+      };
+    } else {
+      if (user.lastViewedVideos.length === 3) {
+        user.lastViewedVideos.shift();
+      }
+      user.lastViewedVideos.push({
+        courseName,
+        courseId: courseId,
+        videoId: videoId,
+        topicName,
+        sequentialTopic,
+        URLVideo,
+        videoViewed,
+      });
+    }
+
+    await user.save();
+    res.json({
+      ok: true,
+      msg: "Estado del último video visualizado actualizado correctamente",
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      msg: "Error al actualizar el estado del video. Por favor, comunícate con el administrador.",
+    });
+  }
+};
+
 module.exports = {
   updateCourseProgress1,
 };
