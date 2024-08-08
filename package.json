@@ -28,6 +28,7 @@
     "mongoose": "^5.11.15",
     "nodemailer": "^6.9.4",
     "nodemon": "^2.0.22",
+    "regresemos_a_nuestra_casa_cms": "file:",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   }

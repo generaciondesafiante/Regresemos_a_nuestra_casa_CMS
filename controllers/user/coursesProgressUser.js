@@ -93,8 +93,7 @@ const updateCourseProgress = async (req, res = response) => {
           (res) => res._id.toString() === resourceId
         );
 
-        console.log("Last Viewed Resource Index:", lastViewedResourceIndex);
-        console.log("New Resource Index:", newResourceIndex);
+    
 
         if (newResourceIndex === -1) {
           return res.status(400).json({ message: "Invalid resource ID" });
@@ -112,7 +111,6 @@ const updateCourseProgress = async (req, res = response) => {
     }
 
     await user.save();
-    console.log("Updated Course Progress:", courseProgress);
     return res.status(200).json({
       message: "Course progress updated successfully",
       courseProgress,
