@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const User = require("../models/User");
 
-const sendPasswordResetEmail = async (email, resetToken, actualUrl) => {
+const sendPasswordResetEmail = async (email, resetToken, currentUrl) => {
   try {
     const transporter = nodemailer.createTransport({
       service: "Gmail",
@@ -16,7 +16,7 @@ const sendPasswordResetEmail = async (email, resetToken, actualUrl) => {
       throw new Error("Usuario no encontrado");
     }
 
-    const resetLink = `${actualUrl}/resetPassword/${user.id}/${resetToken}`;
+    const resetLink = `${currentUrl}/resetPassword/${user.id}/${resetToken}`;
     const userName =
       user.name.charAt(0).toUpperCase() + user.name.slice(1).toLowerCase();
 
