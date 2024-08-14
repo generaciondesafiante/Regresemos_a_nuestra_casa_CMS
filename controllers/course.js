@@ -1,100 +1,80 @@
+const { response } = require("express");
+const mongoose = require("mongoose");
 const User = require("../models/User");
+const Course = require("../models/Courses");
 
-const coursesProgressUser = async (req, res = response) => {
-  const {
-    id,
-    courseId,
-    topicId,
-    lessonId,
-    videoId,
-    viewVideo,
-    sequentialTopic,
-    sequentialLesson,
-  } = req.body;
-  if (sequentialTopic === undefined) {
-    return res.status(400).json({
-      ok: false,
-      msg: "La propiedad sequentialTopic no está definida en la solicitud.",
-    });
-  }
+const updateCourseProgress1 = async (req, res = response) => {
+  const { userId, courseId, topicId, resourceId } = req.body;
+
   try {
-    const user = await User.findOne({ _id: id });
+    // Verifica si userId es un ObjectId válido
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
 
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({
-        ok: false,
-        msg: "Usuario no encontrado",
-      });
+      return res.status(404).json({ message: "User not found" });
     }
-    const courseProgress = user.CourseProgress.find(
-      (c) => c.idCourse === courseId
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    let courseProgress = user.CourseProgress.find(
+      (cp) => cp.course.toString() === courseId
     );
+
     if (!courseProgress) {
-      user.CourseProgress.push({
-        idCourse: courseId,
-        topics: [
-          {
-            idTopic: topicId,
-            sequentialTopic: sequentialTopic,
-            lessons: [
-              {
-                idLesson: lessonId,
-                sequentialLesson: sequentialLesson,
-                idVideo: videoId,
-                viewVideo: viewVideo,
-              },
-            ],
-          },
-        ],
-      });
+      // Si el progreso del curso no existe, se crea
+      courseProgress = {
+        course: mongoose.Types.ObjectId(courseId),
+        lastViewedTopic: { topicId, lastViewedResource: resourceId },
+      };
+      user.CourseProgress.push(courseProgress);
     } else {
-      if (sequentialTopic > courseProgress.topics[0].sequentialTopic) {
-        const topics = [
-          {
-            idTopic: topicId,
-            sequentialTopic: sequentialTopic,
-            lessons: [
-              {
-                idLesson: lessonId,
-                sequentialLesson: sequentialLesson,
-                idVideo: videoId,
-                viewVideo: viewVideo,
-              },
-            ],
-          },
-        ];
-
-        courseProgress.topics = topics;
-        await user.save();
-      } else if (sequentialTopic === courseProgress.topics[0].sequentialTopic) {
-        const findSequentialLesson =
-          courseProgress.topics[0].lessons[0].sequentialLesson;
-        if (sequentialLesson > findSequentialLesson) {
-          const lesson = [
-            {
-              idLesson: lessonId,
-              sequentialLesson: sequentialLesson,
-              idVideo: videoId,
-              viewVideo: viewVideo,
-            },
-          ];
-          courseProgress.topics[0].lessons = lesson;
-          await user.save();
-        }
+      const topicIndex = course.topic.findIndex(
+        (topic) => topic._id.toString() === topicId
+      );
+      if (topicIndex === -1) {
+        return res.status(400).json({ message: "Invalid topic ID" });
       }
-    }
-    await user.save();
 
-    res.json({
-      ok: true,
-      msg: "Estado del video actualizado correctamente",
-    });
+      const lastViewedTopicIndex = course.topic.findIndex(
+        (topic) =>
+          courseProgress.lastViewedTopic.topicId === topic._id.toString()
+      );
+
+      if (lastViewedTopicIndex !== -1 && topicIndex < lastViewedTopicIndex) {
+        return res
+          .status(400)
+          .json({ message: "Cannot update to a previous topic" });
+      }
+
+      if (
+        courseProgress.lastViewedTopic.topicId === topicId &&
+        parseInt(resourceId, 10) <
+          parseInt(courseProgress.lastViewedTopic.lastViewedResource, 10)
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Cannot save lower resource progress" });
+      }
+
+      courseProgress.lastViewedTopic = {
+        topicId,
+        lastViewedResource: resourceId,
+      };
+    }
+
+    await user.save();
+    return res
+      .status(200)
+      .json({ message: "Course progress updated successfully" });
   } catch (error) {
-    console.error("Error al actualizar el estado del video:", error);
-    res.status(500).json({
-      ok: false,
-      msg: "Error al actualizar el estado del video. Por favor, comunícate con el administrador.",
-    });
+    console.error("Error updating course progress:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -165,6 +145,5 @@ const lastViewedVideos = async (req, res = response) => {
 };
 
 module.exports = {
-  coursesProgressUser,
-  lastViewedVideos,
+  updateCourseProgress1,
 };

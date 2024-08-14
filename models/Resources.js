@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, models } = require("mongoose");
 
 const ResourceSchema = new Schema({
   resourceUrl: { type: String, required: true },
@@ -16,5 +16,5 @@ ResourceSchema.pre("save", function (next) {
   next();
 });
 
-const Resource = model("Resource", ResourceSchema);
+const Resource = models.Resource || model("Resource", ResourceSchema);
 module.exports = Resource;

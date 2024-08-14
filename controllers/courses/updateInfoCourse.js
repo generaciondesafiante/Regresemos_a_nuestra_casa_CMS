@@ -4,7 +4,7 @@ const Course = require("../../models/Courses");
 const updateInfoCurse = async (req, res = response) => {
   const { courseId } = req.params;
   const updates = req.body;
-  console.log(updates);
+
   try {
     const course = await Course.findByIdAndUpdate(courseId, updates, {
       new: true,
