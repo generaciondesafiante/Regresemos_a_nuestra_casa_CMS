@@ -32,7 +32,6 @@ const emailUserPasswordForget = async (req, res = response) => {
       expiresIn: "1h",
     });
     await sendPasswordResetEmail(user.email, resetToken, currentUrl);
-    //*Generar nuestro Jwt
     res.json({
       ok: true,
       uid: user.id,
