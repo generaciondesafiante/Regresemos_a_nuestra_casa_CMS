@@ -1,7 +1,7 @@
 const User = require("../../models/User");
 
 const changeAdminRole = async (req, res = response) => {
-  const { email, admin } = req.body; 
+  const { email, admin } = req.body;
   console.log(email, admin);
   try {
     const user = await User.findOne({ email });
@@ -17,7 +17,7 @@ const changeAdminRole = async (req, res = response) => {
     await user.save();
 
     const message = admin
-      ? "El rol de administrador ha sido actualizado"
+      ? "Administrador agregado exitosamente"
       : "Administrador eliminado correctamente";
 
     res.json({
