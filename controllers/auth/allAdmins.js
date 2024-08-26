@@ -20,6 +20,8 @@ const allAdmins = async (req, res = response) => {
         name: 1,
         lastname: 1,
         image: 1,
+        email: 1,
+        admin: true,
       }
     );
 

@@ -8,8 +8,7 @@ const {
 
 const emailUserPasswordForget = async (req, res = response) => {
   const { id } = req.params;
-
-  const { email } = req.body;
+  const { email, currentUrl } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -32,8 +31,7 @@ const emailUserPasswordForget = async (req, res = response) => {
     const resetToken = jsonWebToken.sign({ userId: id }, "secret_key", {
       expiresIn: "1h",
     });
-    await sendPasswordResetEmail(user.email, resetToken);
-    //*Generar nuestro Jwt
+    await sendPasswordResetEmail(user.email, resetToken, currentUrl);
     res.json({
       ok: true,
       uid: user.id,
