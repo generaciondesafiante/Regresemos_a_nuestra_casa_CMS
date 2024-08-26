@@ -1,6 +1,7 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../../models/User");
+const sendPasswordChangeConfirmationEmail = require("../../middlewares/confirm-mail-changePassword");
 
 const changePassword = async (req, res = response) => {
   const { id } = req.params;
@@ -20,8 +21,8 @@ const changePassword = async (req, res = response) => {
     // Update user password
     user.password = hashedPassword;
     await user.save();
-
     //Here you can perform other actions like sending an email or generating a JWT token if needed
+    await sendPasswordChangeConfirmationEmail(user.email);
 
     res.json({
       msg: "Contraseña actualizada exitosamente",
