@@ -2,7 +2,6 @@ const User = require("../../models/User");
 
 const changeAdminRole = async (req, res = response) => {
   const { email, admin } = req.body;
-  console.log(email, admin);
   try {
     const user = await User.findOne({ email });
 

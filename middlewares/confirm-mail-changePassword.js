@@ -2,7 +2,6 @@ const nodemailer = require("nodemailer");
 const User = require("../models/User");
 
 const sendPasswordChangeConfirmationEmail = async (email) => {
-  console.log(email);
   try {
     const transporter = nodemailer.createTransport({
       service: "Gmail",

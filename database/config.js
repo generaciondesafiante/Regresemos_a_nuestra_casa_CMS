@@ -9,9 +9,9 @@ const dbConection = async () => {
       useFindAndModify: false,
     });
     //This line is to internally determine the connection to the database is established
-    console.log("Db online");
+    console.info("Db online");
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error("Error a la hora de inicializar base de datos");
   }
 };

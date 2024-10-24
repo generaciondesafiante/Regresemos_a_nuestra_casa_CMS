@@ -21,7 +21,7 @@ const triggerJWT = (
       },
       (err, token) => {
         if (err) {
-          console.log(err);
+          console.error(err);
           reject("No se pudo generar el token");
         }
 
