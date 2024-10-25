@@ -3,7 +3,6 @@ const User = require("../models/User");
 
 const sendPasswordResetEmail = async (email, resetToken, currentUrl) => {
   const passKey = process.env.PASS_KEY_MAIL;
-  console.log(passKey);
 
   try {
     const transporter = nodemailer.createTransport({
