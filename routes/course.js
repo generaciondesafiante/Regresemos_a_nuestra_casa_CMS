@@ -10,7 +10,7 @@ const patchUpdateInfoCourse = require("./courses/patchUpdateInfoCourse");
 const patchUpdateInfoTopicCourse = require("./courses/patchUpdateInfoTopicCourse");
 const putUpdateReorderTopicsFromCourse = require("./courses/putReorderTopicsFromCourse");
 const putUpdateReorderResourceFromTopic = require("./courses/putReorderResourcesFromTopic");
-
+const addResourceToTopic = require('./courses/putUpdateLessonToTopic')
 const router = Router();
 
 router.use(postCreateCourse);
@@ -24,5 +24,6 @@ router.use(patchUpdateInfoCourse);
 router.use(patchUpdateInfoTopicCourse);
 router.use(putUpdateReorderTopicsFromCourse);
 router.use(putUpdateReorderResourceFromTopic);
+router.use(addResourceToTopic)
 
 module.exports = router;
