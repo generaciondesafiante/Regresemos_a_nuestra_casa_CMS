@@ -3,12 +3,12 @@ const User = require("../models/User");
 
 const sendPasswordResetEmail = async (email, resetToken, currentUrl) => {
   const passKey = process.env.PASS_KEY_MAIL;
-
+  const emailUser = process.env.EMAIL_USER;
   try {
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
-        user: "pruebasdanielmayo@gmail.com",
+        user: emailUser,
         pass: passKey,
       },
     });
@@ -17,13 +17,13 @@ const sendPasswordResetEmail = async (email, resetToken, currentUrl) => {
     if (!user) {
       throw new Error("Usuario no encontrado");
     }
-
+    console.info(currentUrl);
     const resetLink = `${currentUrl}/resetPassword/${user.id}/${resetToken}`;
     const userName =
       user.name.charAt(0).toUpperCase() + user.name.slice(1).toLowerCase();
 
     await transporter.sendMail({
-      from: user.email,
+      from: emailUser,
       to: email,
       subject: "Recuperación de Contraseña",
       html: `

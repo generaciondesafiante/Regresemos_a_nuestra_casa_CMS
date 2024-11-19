@@ -2,12 +2,14 @@ const nodemailer = require("nodemailer");
 const User = require("../models/User");
 
 const sendPasswordChangeConfirmationEmail = async (email) => {
+  const passKey = process.env.PASS_KEY_MAIL;
+  const emailUser = process.env.EMAIL_USER;
   try {
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
-        user: "pruebasdanielmayo@gmail.com",
-        pass: "tfehpymjjkfwsagn",
+        user: emailUser,
+        pass: passKey,
       },
     });
     let user = await User.findOne({ email });
@@ -16,7 +18,7 @@ const sendPasswordChangeConfirmationEmail = async (email) => {
     }
 
     await transporter.sendMail({
-      from: user.email,
+      from: emailUser,
       to: email,
       subject: "Confirmación de Cambio de Contraseña",
       html: `
