@@ -1,20 +1,19 @@
 const Course = require("../../models/Courses");
 
 const deleteCourse = async (req, res) => {
-  const { idCourse } = req.params;
   try {
-    const deletedCourse = await Course.findByIdAndDelete(idCourse); 
+    const { courseId } = req.params;
 
-    if (!deletedCourse) {
-      return res.status(404).json({ message: "Curso no encontrado" });
+    // Buscar el curso por ID y eliminarlo
+    const course = await Course.findByIdAndDelete(courseId);
+
+    if (!course) {
+      return res.status(404).send({ error: "Course not found" });
     }
 
-    res.json({
-      message: "Curso eliminado exitosamente",
-      course: deletedCourse,
-    });
+    res.status(200).send({ message: "Course deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).send({ error: error.message });
   }
 };
 

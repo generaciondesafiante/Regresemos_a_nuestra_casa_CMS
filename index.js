@@ -7,7 +7,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 
 const servers = [
-  { url: "http://localhost:8080" },
+  { url: "http://localhost:8081" },
   { url: "https://regresemos-cms.herokuapp.com" },
 ];
 
@@ -55,6 +55,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/user", require("./routes/user"));
 app.use("/api/course", require("./routes/course"));
 app.use("/api/resources", require("./routes/resources"));
+app.use("/api/topics", require("./routes/topics"));
 app.use(
   "/api/doc",
   swaggerUi.serve,

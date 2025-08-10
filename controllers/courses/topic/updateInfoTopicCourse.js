@@ -1,5 +1,5 @@
 const { response } = require("express");
-const Course = require("../../models/Courses");
+const Course = require("../../../models/Courses");
 
 const updateInfoTopicCourse = async (req, res = response) => {
   const { courseId, topicId } = req.params;

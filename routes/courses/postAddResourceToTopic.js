@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { validateUserAndRole } = require("../../middlewares/validate-rolUser");
-const addResourceToTopic = require("../../controllers/courses/addResourcesToTopic");
+const addResourceToTopic = require("../../controllers/courses/topic/addResourcesToTopic");
 
 const router = Router();
 

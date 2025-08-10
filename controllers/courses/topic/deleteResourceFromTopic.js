@@ -1,4 +1,4 @@
-const Course = require("../../models/Courses");
+const Course = require("../../../models/Courses");
 
 const deleteResourceFromTopic = async (req, res) => {
   const { idCourse, topicId, resourceId } = req.params;

@@ -1,45 +1,29 @@
 const { Router } = require("express");
 const deleteCourse = require("../../controllers/courses/deleteCourse");
-const { validateUserAndRole } = require("../../middlewares/validate-rolUser");
 
 const router = Router();
 
 /**
  * @swagger
- * /api/course/{userId}/{idCourse}:
+ * /api/course/{courseId}:
  *   delete:
- *     summary: Delete a course by ID
+ *     summary: Delete a course
  *     tags: [Courses]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: courseId
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: El ID del usuario (debe ser un administrador)
- *       - in: path
- *         name: idCourse
- *         schema:
- *           type: string
- *         required: true
- *         description: El ID del curso a eliminar
+ *         description: Course ID to delete.
  *     responses:
  *       200:
- *         description: El curso fue eliminado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Mensaje indicando que el curso fue eliminado
+ *         description: Course deleted successfully
  *       404:
- *         description: Curso no encontrado
+ *         description: Course not found
  *       500:
- *         description: Error interno del servidor
+ *         description: Error deleting the course
  */
-
-router.delete("/:userId/:idCourse", validateUserAndRole, deleteCourse);
+router.delete("/:courseId", deleteCourse);
 
 module.exports = router;

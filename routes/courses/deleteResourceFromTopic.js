@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { validateUserAndRole } = require("../../middlewares/validate-rolUser");
-const deleteResourceFromTopic = require("../../controllers/courses/deleteResourceFromTopic");
+const deleteResourceFromTopic = require("../../controllers/courses/topic/deleteResourceFromTopic");
 
 const router = Router();
 

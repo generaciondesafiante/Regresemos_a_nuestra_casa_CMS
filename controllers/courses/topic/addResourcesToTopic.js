@@ -1,5 +1,5 @@
-const Course = require("../../models/Courses");
-const Resource = require("../../models/Resources");
+const Course = require("../../../models/Courses");
+const Resource = require("../../../models/Resources");
 
 const addResourceToTopic = async (req, res) => {
   try {

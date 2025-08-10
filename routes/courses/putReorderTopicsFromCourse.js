@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const updateReorderTopicsFromCourse = require("../../controllers/courses/updateReorderTopicFromCourse");
+const updateReorderTopicsFromCourse = require("../../controllers/courses/topic/updateReorderTopicFromCourse");
 const { validateUserAndRole } = require("../../middlewares/validate-rolUser");
 
 const router = Router();

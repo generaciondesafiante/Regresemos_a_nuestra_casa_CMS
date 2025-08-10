@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const reorderResources = require("../../controllers/courses/updateReorderResourceFromTopic");
+const reorderResources = require("../../controllers/courses/topic/updateReorderResourceFromTopic");
 
 const router = Router();
 
@@ -7,7 +7,7 @@ const router = Router();
  * @swagger
  * /api/course/{userId}/updateCourse/{courseId}/topics/{topicId}/reorderResources:
  *   put:
- *     summary: Reorganiza el orden de los recursos en un tema
+ *     summary: Reorganiza el orden de los recursos en un tema  
  *     tags: [Courses]
  *     parameters:
  *       - in: path
