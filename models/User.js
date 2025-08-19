@@ -43,6 +43,11 @@ const UserSchema = new Schema({
   admin: { type: Boolean },
   CourseProgress: [courseSchema],
   lastViewedResources: [LastViewedResourceSchema],
+},{ timestamps: true });
+
+UserSchema.pre("save", function (next) {
+  this.updatedAt = Date.now();
+  next();
 });
 
 const User = models.User || model("User", UserSchema);

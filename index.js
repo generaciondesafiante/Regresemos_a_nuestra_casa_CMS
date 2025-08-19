@@ -56,6 +56,7 @@ app.use("/api/user", require("./routes/user"));
 app.use("/api/course", require("./routes/course"));
 app.use("/api/resources", require("./routes/resources"));
 app.use("/api/topics", require("./routes/topics"));
+app.use("/api/admin", require("./routes/admin"));
 app.use(
   "/api/doc",
   swaggerUi.serve,

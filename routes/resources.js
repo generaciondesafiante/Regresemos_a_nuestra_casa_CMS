@@ -1,8 +1,8 @@
 const { Router } = require("express");
-const putUpdateResources = require("./resources/putUpdateResources");
-const postCreateResource = require("./resources/postCreateResource");
-const getAllResources = require("./resources/getAllResources");
-const deleteResource = require("./resources/deleteResource");
+const putUpdateResources = require("./resources/admin/putUpdateResources");
+const postCreateResource = require("./resources/admin/postCreateResource");
+const getAllResources = require("./resources/admin/getAllResources");
+const deleteResource = require("./resources/admin/deleteResource");
 
 const router = Router();
 

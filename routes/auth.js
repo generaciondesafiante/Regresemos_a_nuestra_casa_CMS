@@ -11,8 +11,7 @@ const editInformationUser = require("../controllers/auth/editInfomationUser");
 const changePassword = require("../controllers/auth/changePassword");
 const validatePassword = require("../controllers/auth/validatePassword");
 const emailUserPasswordForget = require("../controllers/auth/emailUserPasswordForget");
-const allStudents = require("../controllers/auth/allStudents");
-const allAdmins = require("../controllers/auth/allAdmins");
+
 
 const router = Router();
 
@@ -100,8 +99,8 @@ router.post(
   emailUserPasswordForget
 );
 
-router.get("/students/count/:id", allStudents);
+// router.get("/students/count/:id", allStudents);
 
-router.get("/admins/:id", allAdmins);
+// router.get("/admins/:id", allAdmins);
 
 module.exports = router;
