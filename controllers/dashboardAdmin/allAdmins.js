@@ -1,6 +1,7 @@
 const User = require("../../models/User");
 const { paginate } = require("../../helpers/paginationHelper");
 
+
 const getAdminsTotals = async (req, res) => {
   try {
     const {

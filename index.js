@@ -7,7 +7,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 
 const servers = [
-  { url: "http://localhost:8081" },
+  { url: `http://localhost:${process.env.PORT}` },
   { url: "https://regresemos-cms.herokuapp.com" },
 ];
 
@@ -62,8 +62,6 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerJsDoc(swaggerSpec))
 );
-
-//todo: CRUD: EVENTOS
 
 //listen requests
 app.listen(process.env.PORT, () => {

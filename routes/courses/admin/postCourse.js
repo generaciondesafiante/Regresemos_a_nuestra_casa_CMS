@@ -7,17 +7,20 @@ const router = Router();
 
 /**
  * @swagger
- * /api/course/{userId}:
+ * /api/courses/admin/{userId}:
  *   post:
- *     summary: Create a new course
- *     tags: [Courses]
+ *     tags: [Courses - Admin]
+ *     summary: Crear un nuevo curso (Admin)
+ *     description: Crea un nuevo curso en el sistema. Requiere autenticación de administrador.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: The user ID (must be an admin)
+ *         description: ID del administrador que realiza la acción
  *     requestBody:
  *       required: true
  *       content:
@@ -31,57 +34,36 @@ const router = Router();
  *             properties:
  *               nameCourse:
  *                 type: string
- *                 description: The name of the course
+ *                 description: Nombre único del curso
  *               titleCourse:
  *                 type: string
- *                 description: The title of the course
+ *                 description: Título descriptivo del curso
  *               typeOfRoute:
  *                 type: string
- *                 description: The type of route for the course
- *             example:
- *               nameCourse: Curso de Programación
- *               titleCourse: Aprende a Programar
- *               typeOfRoute: ruta-principal
+ *                 enum: ["practices", "theoretical"]
+ *                 description: Tipo de ruta del curso (práctico o teórico)
  *     responses:
  *       201:
- *         description: The course was successfully created
+ *         description: Curso creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Course'
+ *       400:
+ *         description: Error en la solicitud o datos inválidos
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required:
- *                 - nameCourse
- *                 - titleCourse
- *                 - typeOfRoute
  *               properties:
- *                 nameCourse:
+ *                 error:
  *                   type: string
- *                   description: The name of the course
- *                 titleCourse:
- *                   type: string
- *                   description: The title of the course
- *                 typeOfRoute:
- *                   type: string
- *                   description: The type of route for the course
- *                 topic:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       nameTopic:
- *                         type: string
- *                       resources:
- *                         type: array
- *                         items:
- *                           type: string
- *             example:
- *               nameCourse: Nombre del curso
- *               titleCourse: Título del curso
- *               typeOfRoute: tipo de ruta
- *               topic: []
- *       400:
- *         description: Bad request
+ *                   example: "Error message describing the issue"
+ *       401:
+ *         description: No autorizado - Se requiere autenticación de administrador
+ *       403:
+ *         description: Prohibido - El usuario no tiene permisos de administrador
  */
-
 router.post("/:userId", validateUserAndRole, validateCourseType, createCourse);
+
 module.exports = router;

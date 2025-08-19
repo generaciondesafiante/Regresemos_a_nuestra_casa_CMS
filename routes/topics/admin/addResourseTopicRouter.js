@@ -1,16 +1,27 @@
 const { Router } = require("express");
+const { check } = require("express-validator");
 const addResourceToTopic = require("../../../controllers/topics/admin/addResourceToTopic");
 const { validateUserAndRole } = require("../../../middlewares/validate-rolUser");
+const { validateFields } = require("../../../middlewares/validate-fields");
 
 const router = Router();
 
 /**
  * @swagger
- * /api/topics/{topicId}/add-resource:
+ * /api/topics/admin/{userId}/{topicId}/add-resource:
  *   put:
- *     summary: Agrega un recurso a un tema específico
- *     tags: [Topics]
+ *     tags: [Topics - Admin]
+ *     summary: Agregar un recurso a un tema (Admin)
+ *     description: Agrega un recurso existente a un tema específico. Requiere autenticación de administrador.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del administrador que realiza la acción
  *       - in: path
  *         name: topicId
  *         required: true
@@ -28,14 +39,14 @@ const router = Router();
  *             properties:
  *               resourceId:
  *                 type: string
- *                 description: ID del recurso a agregar
+ *                 description: ID del recurso a agregar al tema
  *               isMandatory:
  *                 type: boolean
- *                 description: Indica si el recurso es obligatorio
  *                 default: false
+ *                 description: Indica si el recurso es obligatorio para el tema
  *     responses:
  *       200:
- *         description: Recurso agregado exitosamente al tema
+ *         description: Recurso agregado al tema exitosamente
  *         content:
  *           application/json:
  *             schema:
@@ -43,12 +54,26 @@ const router = Router();
  *               properties:
  *                 ok:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: "Recurso agregado al tema exitosamente"
  *                 topic:
  *                   $ref: '#/components/schemas/Topic'
  *       400:
- *         description: Error en la solicitud (ej. recurso ya existe)
+ *         description: Error en la solicitud o datos inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "El recurso ya existe en este tema"
+ *       401:
+ *         description: No autorizado - Se requiere autenticación de administrador
+ *       403:
+ *         description: Prohibido - El usuario no tiene permisos de administrador
  *       404:
  *         description: Tema no encontrado
  *       500:
@@ -56,7 +81,13 @@ const router = Router();
  */
 router.put(
     "/:userId/:topicId/add-resource",
-    validateUserAndRole,
+    [
+        check('userId', 'El ID de usuario es obligatorio').not().isEmpty(),
+        check('topicId', 'El ID del tema es obligatorio').not().isEmpty(),
+        check('resourceId', 'El ID del recurso es obligatorio').not().isEmpty(),
+        validateFields,
+        validateUserAndRole
+    ],
     addResourceToTopic
 );
 

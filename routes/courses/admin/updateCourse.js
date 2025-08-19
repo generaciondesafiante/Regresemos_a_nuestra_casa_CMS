@@ -1,21 +1,26 @@
 const { Router } = require("express");
 const updateCourse = require("../../../controllers/courses/admin/updateCourse");
+const { validateJWT } = require("../../../middlewares/validate-jwt");
+const { validateCourseType } = require("../../../middlewares/validate-courseType");
 
 const router = Router();
 
 /**
  * @swagger
- * /api/courses/{courseId}:
+ * /api/courses/admin/{courseId}:
  *   patch:
- *     summary: Update a course
- *     tags: [Courses]
+ *     tags: [Courses - Admin]
+ *     summary: Actualizar un curso existente (Admin)
+ *     description: Actualiza la información de un curso existente. Requiere autenticación de administrador.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: courseId
  *         required: true
  *         schema:
  *           type: string
- *         description: Course ID to update.
+ *         description: ID del curso a actualizar
  *     requestBody:
  *       required: true
  *       content:
@@ -25,22 +30,45 @@ const router = Router();
  *             properties:
  *               nameCourse:
  *                 type: string
+ *                 description: Nuevo nombre del curso
  *               titleCourse:
  *                 type: string
+ *                 description: Nuevo título del curso
  *               typeOfRoute:
  *                 type: string
+ *                 enum: ["practices", "theoretical"]
+ *                 description: Tipo de ruta del curso (práctico o teórico)
  *     responses:
  *       200:
- *         description: Course updated successfully
+ *         description: Curso actualizado exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Course'
- *       404:
- *         description: Course not found
  *       400:
- *         description: Error updating the course
+ *         description: Error en la solicitud o datos inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error message describing the issue"
+ *       401:
+ *         description: No autorizado - Se requiere autenticación de administrador
+ *       403:
+ *         description: Prohibido - El usuario no tiene permisos de administrador
+ *       404:
+ *         description: Curso no encontrado
  */
-router.patch("/:courseId", updateCourse);
+router.patch(
+  "/:courseId",
+  [
+    validateJWT,
+    validateCourseType
+  ],
+  updateCourse
+);
 
 module.exports = router;
