@@ -48,11 +48,7 @@ const router = Router();
  */
 router.get(
   "/:id",
-  [
-    validateJWT,
-    check("id", "No es un ID válido").isMongoId(),
-    validateFields
-  ],
+  [check("id", "No es un ID válido").isMongoId(), validateFields],
   getCourseById
 );
 

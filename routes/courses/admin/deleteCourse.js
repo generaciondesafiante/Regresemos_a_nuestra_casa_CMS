@@ -46,6 +46,6 @@ const router = Router();
  *       500:
  *         description: Error del servidor
  */
-router.delete("/:courseId", validateJWT, deleteCourse);
+router.delete("/:courseId", deleteCourse);
 
 module.exports = router;

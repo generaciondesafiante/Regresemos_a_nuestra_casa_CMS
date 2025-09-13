@@ -70,7 +70,6 @@ const router = Router();
  *       500:
  *         description: Error del servidor
  */
-router.get("/", validateJWT, getCourses);
+router.get("/", getCourses);
 
 module.exports = router;
-

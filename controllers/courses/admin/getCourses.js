@@ -7,7 +7,7 @@ const getCourses = async (req, res) => {
     // Verificar que limit y page sean proporcionados
     if (limit === undefined || page === undefined) {
       return res.status(400).send({
-        error: "Los parámetros 'limit' y 'page' son obligatorios."
+        error: "Los parámetros 'limit' y 'page' son obligatorios.",
       });
     }
 
@@ -16,14 +16,21 @@ const getCourses = async (req, res) => {
     const pageNumber = parseInt(page, 10);
 
     // Validar que limit y page sean números positivos
-    if (isNaN(limitNumber) || isNaN(pageNumber) || limitNumber <= 0 || pageNumber <= 0) {
+    if (
+      isNaN(limitNumber) ||
+      isNaN(pageNumber) ||
+      limitNumber <= 0 ||
+      pageNumber <= 0
+    ) {
       return res.status(400).send({
-        error: "Los parámetros 'limit' y 'page' deben ser números positivos."
+        error: "Los parámetros 'limit' y 'page' deben ser números positivos.",
       });
     }
 
     // Configurar el filtro de búsqueda
-    const filter = search ? { nameCourse: { $regex: search, $options: 'i' } } : {};
+    const filter = search
+      ? { nameCourse: { $regex: search, $options: "i" } }
+      : {};
 
     // Obtener los cursos con paginación
     const courses = await Course.find(filter)
@@ -42,7 +49,7 @@ const getCourses = async (req, res) => {
     res.status(200).send({
       courses,
       pagination: {
-        totalCourses,
+        totalCount: totalCourses,
         totalPages,
         currentPage: pageNumber,
         hasPreviousPage,

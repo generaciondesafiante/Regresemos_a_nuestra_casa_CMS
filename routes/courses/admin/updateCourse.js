@@ -64,10 +64,10 @@ const router = Router();
  */
 router.patch(
   "/:courseId",
-  [
-    validateJWT,
-    validateCourseType
-  ],
+  // [
+  //   validateJWT,
+  //   validateCourseType
+  // ],
   updateCourse
 );
 

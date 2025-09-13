@@ -102,7 +102,7 @@ router.post(
   [
     check('userId', 'El ID de usuario es obligatorio').not().isEmpty(),
     check('nameTopic', 'El nombre del tema es obligatorio').not().isEmpty(),
-    check('courseId', 'El ID del curso es obligatorio').not().isEmpty(),
+    check('courseId', 'El ID del curso es obligat981orio').not().isEmpty(),
     validateFields,
     validateUserAndRole
   ],

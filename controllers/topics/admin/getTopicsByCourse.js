@@ -8,18 +8,14 @@ const getTopicsByCourse = async (req, res) => {
     const { courseId } = req.params;
     const { search, ...filters } = req.filters;
 
-    // Verificar si el curso existe
-    const courseExists = await Course.exists({ _id: courseId });
-    if (!courseExists) {
-      return res.status(404).send({ error: "Course not found" });
-    }
+    // Obtener el curso y sus datos
+    const course = await Course.findById(courseId)
+      .select("topics nameCourse titleCourse typeOfRoute")
+      .lean();
 
-    // Obtener lista de IDs de topics del curso
-    const course = await Course.findById(courseId).select('topics').lean();
     if (!course) {
       return res.status(404).send({ error: "Course not found" });
     }
-
 
     // Construir la consulta base
     let baseQuery = { _id: { $in: course.topics }, ...filters };
@@ -49,6 +45,11 @@ const getTopicsByCourse = async (req, res) => {
     const totalPages = Math.ceil(totalItems / limit);
 
     res.status(200).send({
+      course: {
+        nameCourse: course.nameCourse,
+        titleCourse: course.titleCourse,
+        typeOfRoute: course.typeOfRoute,
+      },
       topics,
       pagination: {
         totalItems,

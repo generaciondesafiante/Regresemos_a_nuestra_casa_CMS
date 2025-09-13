@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validateFields } = require("../../../middlewares/validate-fields");
-const getTopicById = require("../../../controllers/topics/admin/getTopicById");
+const getTopicByIdTable = require("../../../controllers/topics/admin/getTopicByIdTable");
 const queryParser = require("../../../middlewares/queryParser");
 
 const router = Router();
@@ -104,14 +104,14 @@ const router = Router();
  *                   example: "Error message"
  */
 router.get(
-  "/:userId/:topicId",
+  "/:userId/:topicId/resourcesToTopicTable",
   [
     check('userId', 'El ID de usuario es obligatorio').not().isEmpty(),
     check('topicId', 'El ID del tema es obligatorio').not().isEmpty(),
     validateFields,
     queryParser
   ],
-  getTopicById
+  getTopicByIdTable
 );
 
 /**

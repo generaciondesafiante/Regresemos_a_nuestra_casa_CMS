@@ -6,6 +6,7 @@ const triggerJWT = require("../../helpers/jwt")
 
 const loginUser = async (req, res = response) => {
   const { email, password } = req.body;
+  console.log(req.body); 
   try {
     let user = await User.findOne({ email });
 

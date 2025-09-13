@@ -9,6 +9,7 @@ const topicSchema = new Schema({
       isMandatory: { type: Boolean, required: false },
     },
   ],
+  isActive: { type: Boolean, default: true },
 });
 
 const Topic = mongoose.model("Topic", topicSchema);

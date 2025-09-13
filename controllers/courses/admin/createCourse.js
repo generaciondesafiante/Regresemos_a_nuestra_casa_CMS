@@ -7,6 +7,7 @@ const createCourse = async (req, res) => {
       nameCourse,
       titleCourse,
       typeOfRoute,
+      isActive: true, // Default value
     });
     await course.save();
     res.status(201).send(course);
