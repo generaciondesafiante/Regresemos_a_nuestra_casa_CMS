@@ -6,13 +6,16 @@ const updateResource = async (req, res = response) => {
   try {
     const { idResource } = req.params;
     const updateData = req.body;
+    console.log(updateData);
 
     // Agregar la fecha de actualización
     if (Object.keys(updateData).length > 0) {
       updateData.updatedAt = new Date();
     }
 
-    const resource = await Resource.findByIdAndUpdate(idResource, updateData, { new: true });
+    const resource = await Resource.findByIdAndUpdate(idResource, updateData, {
+      new: true,
+    });
 
     if (!resource) {
       return res.status(404).json({ error: "Recurso no encontrado" });

@@ -24,7 +24,7 @@ const allResources = async (req, res = response) => {
       ...req.pagination,
       ...req.sorting,
       search,
-      searchFields: ['title', 'description'] // campos donde buscar
+      searchFields: ['title', 'typeResource'] // campos donde buscar
     });
 
     res.status(200).json({
