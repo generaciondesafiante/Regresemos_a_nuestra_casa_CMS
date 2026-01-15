@@ -6,10 +6,16 @@ const ResourceSchema = new Schema(
     typeResource: { type: String, required: true },
     description: { type: String },
     visibility: { type: String },
-    resourceUrl: { type: String, required: true },
+    resourceUrl: {
+      url: { type: String, required: true },
+      publicId: { type: String },
+    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-    miniaturaUrl: { type: String, required: false },
+    miniaturaUrl: {
+      url: { type: String, required: true },
+      publicId: { type: String },
+    },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
